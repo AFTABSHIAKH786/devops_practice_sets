@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Practice Exercise Bank · Python · Go · Kubernetes · IaC</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --panel: #13131a;
+    --panel-2: #0e0e14;
+    --line: #1e2230;
+    --text: #e7e9ee;
+    --muted: #6b7285;
+    --faint: #3a4152;
+
+    --lv-basic: #22c55e;
+    --lv-inter: #3b82f6;
+    --lv-adv:   #f59e0b;
+    --lv-exp:   #ef4444;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body { min-height: 100vh; padding-bottom: 40px; }
+
+  a { color: inherit; }
+
+  ::selection { background: #3b82f655; }
+
+  /* ── Header ── */
+  .site-header {
+    position: sticky; top: 0; z-index: 20;
+    background: linear-gradient(180deg, #101018 0%, #0a0a0f 88%);
+    border-bottom: 1px solid var(--line);
+    padding: 18px 16px 0;
+    backdrop-filter: blur(8px);
+  }
+  .header-inner { max-width: 780px; margin: 0 auto; }
+  .eyebrow {
+    font-size: 10.5px; font-weight: 800; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .eyebrow .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--faint); }
+  h1.title {
+    font-size: 22px; font-weight: 900; color: #f8fafc; line-height: 1.15;
+    letter-spacing: -0.01em; margin-bottom: 3px;
+  }
+  .subtitle { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+
+  /* global progress */
+  .global-progress {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 13px; margin-bottom: 14px;
+  }
+  .global-bar-wrap { flex: 1; height: 6px; background: #1a1e2b; border-radius: 99px; overflow: hidden; }
+  .global-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#6366f1,#a855f7); transition: width .5s; }
+  .global-progress-label { font-size: 11.5px; font-weight: 700; color: #c4b5fd; white-space: nowrap; }
+
+  /* legend */
+  .legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    padding-bottom: 12px; font-size: 11px; color: var(--muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* track tabs */
+  .track-tabs { display: flex; gap: 2px; }
+  .track-tab {
+    flex: 1; padding: 9px 4px 11px; border: none; background: transparent;
+    border-bottom: 3px solid transparent; cursor: pointer; text-align: center;
+    transition: background .15s;
+  }
+  .track-tab:hover { background: #14141d; }
+  .track-tab .t-emoji { font-size: 17px; display: block; margin-bottom: 2px; }
+  .track-tab .t-name {
+    font-size: 10.5px; font-weight: 800; display: block;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .track-tab .t-pct { font-size: 9.5px; display: block; margin-top: 1px; }
+
+  /* ── Main ── */
+  .main { max-width: 780px; margin: 0 auto; padding: 16px 16px 0; }
+
+  /* track overview card */
+  .track-card {
+    border-radius: 16px; padding: 18px 18px 16px; margin-bottom: 14px;
+    border: 1px solid;
+  }
+  .track-card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+  }
+  .track-card-emoji { font-size: 22px; margin-bottom: 5px; }
+  .track-card-title { font-size: 19px; font-weight: 900; color: #f8fafc; letter-spacing: -.01em; }
+  .track-card-subtitle { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .track-card-count { font-size: 11px; color: var(--faint); margin-top: 6px; font-weight: 600; }
+  .track-card-pct { font-size: 30px; font-weight: 900; line-height: 1; text-align: right; }
+  .track-card-pct-label { font-size: 10.5px; color: var(--muted); text-align: right; margin-top: 2px; }
+
+  .track-progress-wrap { height: 5px; background: #ffffff12; border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+  .track-progress-fill { height: 100%; border-radius: 99px; transition: width .5s; }
+
+  .tier-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+  .tier-stat-chip {
+    background: #00000033; border-radius: 9px; padding: 7px 4px;
+    text-align: center; border: 1px solid #ffffff0f;
+  }
+  .tier-stat-name { font-size: 9.5px; font-weight: 800; letter-spacing: .03em; }
+  .tier-stat-frac { font-size: 13px; font-weight: 800; color: #f1f5f9; margin-top: 2px; }
+
+  /* topic selector */
+  .topic-selector {
+    display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px;
+    scrollbar-width: none;
+  }
+  .topic-selector::-webkit-scrollbar { display: none; }
+  .topic-pill {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 20px;
+    border: 1.5px solid var(--line); background: var(--panel);
+    color: var(--muted); font-size: 11.5px; font-weight: 700;
+    cursor: pointer; transition: all .15s; white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .topic-pill:hover { background: #191924; }
+  .topic-pill .p-pct { font-size: 10px; opacity: .75; }
+
+  /* tier card */
+  .tier-card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+    border-left-width: 3px;
+  }
+  .tier-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; gap: 10px;
+  }
+  .tier-head-left { display: flex; align-items: center; gap: 9px; }
+  .tier-badge {
+    font-size: 10px; font-weight: 900; letter-spacing: .05em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 6px;
+  }
+  .tier-count { font-size: 11px; color: var(--muted); font-weight: 700; }
+  .tier-mini-bar { width: 60px; height: 4px; background: #ffffff14; border-radius: 99px; overflow: hidden; }
+  .tier-mini-fill { height: 100%; border-radius: 99px; }
+
+  .tier-body { border-top: 1px solid #ffffff0a; }
+
+  .ex-row {
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 10px 16px; cursor: pointer; transition: background .12s;
+  }
+  .ex-row:not(:last-child) { border-bottom: 1px solid #ffffff08; }
+  .ex-row:hover { background: #ffffff06; }
+  .ex-num {
+    width: 21px; height: 21px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; margin-top: 1px;
+    border: 1.5px solid var(--faint); color: var(--muted);
+    transition: all .15s;
+  }
+  .ex-num.done { border-color: transparent; color: #fff; }
+  .ex-text { font-size: 13px; line-height: 1.5; color: #dde1ea; flex: 1; }
+  .ex-text.done { color: #4a5063; text-decoration: line-through; }
+
+  /* all topics overview */
+  .overview-panel {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px; margin: 14px 0;
+  }
+  .overview-label {
+    font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin-bottom: 10px;
+  }
+  .overview-row {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    padding: 7px 8px; border-radius: 8px; transition: background .12s;
+  }
+  .overview-row:hover { background: #ffffff08; }
+  .overview-num { font-size: 11px; font-weight: 800; color: var(--faint); width: 18px; text-align: center; flex-shrink: 0; }
+  .overview-title { font-size: 12px; font-weight: 600; color: #a9afc0; }
+  .overview-sub { font-size: 10.5px; color: var(--faint); margin-top: 1px; }
+  .overview-bar-wrap { width: 54px; height: 3px; background: #ffffff14; border-radius: 99px; overflow: hidden; flex-shrink: 0; }
+  .overview-bar-fill { height: 100%; border-radius: 99px; }
+  .overview-pct { font-size: 10.5px; font-weight: 800; width: 30px; text-align: right; flex-shrink: 0; }
+
+  /* how to use panel */
+  .howto-panel {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px; margin-bottom: 10px;
+  }
+  .howto-title { font-size: 11.5px; font-weight: 800; color: #a5b4fc; margin-bottom: 11px; }
+  .howto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .howto-cell { background: var(--panel-2); border-radius: 9px; padding: 9px 11px; }
+  .howto-cell-h { font-size: 10.5px; font-weight: 800; color: #cbd5e1; }
+  .howto-cell-p { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+  .reset-row { text-align: center; padding: 18px 0 8px; }
+  .reset-btn {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 20px;
+    cursor: pointer; transition: all .15s;
+  }
+  .reset-btn:hover { border-color: #ef444488; color: #f87171; }
+
+  @media (max-width: 480px) {
+    .tier-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .howto-grid { grid-template-columns: 1fr; }
+    .track-card-pct { font-size: 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="eyebrow">Practice Exercise Bank<span class="dot"></span>464 Exercises<span class="dot"></span>29 Topics</div>
+    <h1 class="title">Basic → Expert Drills</h1>
+    <div class="subtitle">Python · Go · Kubernetes · Infrastructure as Code — build the base, then move forward</div>
+
+    <div class="global-progress">
+      <div class="global-bar-wrap"><div class="global-bar-fill" id="globalBarFill" style="width:0%"></div></div>
+      <div class="global-progress-label" id="globalProgressLabel">0 / 464</div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="track-tabs" id="trackTabs"></div>
+  </div>
+</header>
+
+<div class="main" id="mainContent"></div>
+
+<div class="reset-row">
+  <button class="reset-btn" id="resetBtn">Reset all progress</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   LEVELS — shared difficulty tiers, index-aligned with topic.tiers
+   ══════════════════════════════════════════════════════════════ */
+const LEVELS = [
+  { label: "Basic",                 color: "var(--lv-basic)" },
+  { label: "Intermediate",          color: "var(--lv-inter)" },
+  { label: "Advanced",              color: "var(--lv-adv)" },
+  { label: "Expert / Very Advanced",color: "var(--lv-exp)" },
+];
+
+/* ══════════════════════════════════════════════════════════════
+   DATA — each topic: { name, tiers: [ [basic x4], [inter x4], [adv x4], [expert x4] ] }
+   ══════════════════════════════════════════════════════════════ */
+const tracks = [
+{
+  id: "python", emoji: "🐍", title: "Python", color: "#6366f1",
+  subtitle: "Scripting, Automation & Tooling for Ops",
+  topics: [
+    { name: "Syntax, Variables & Control Flow", tiers: [
+      [
+        `Write a script that swaps two variables without using a temp variable`,
+        `Build a simple calculator using if/elif for +, -, *, /`,
+        `Print a multiplication table for a given number using a for loop`,
+        `Implement FizzBuzz from 1 to 100`,
+      ],
+      [
+        `Write a program to check if a string is a palindrome (ignore case and spaces)`,
+        `Implement a number-guessing game with a while loop and an attempts counter`,
+        `Write a script that flattens a nested list of arbitrary depth`,
+        `Build a simple CLI menu that loops until the user selects "exit"`,
+      ],
+      [
+        `Implement your own range()-like generator function that supports a float step`,
+        `Write a recursive Fibonacci function with memoization`,
+        `Build a small state machine (e.g. traffic light) using enums and match/case`,
+        `Parse and evaluate simple arithmetic expressions from a string without using eval()`,
+      ],
+      [
+        `Implement a mini expression tokenizer/parser for a small config DSL`,
+        `Build a rate limiter from scratch using the sliding-window algorithm`,
+        `Implement your own LRU cache using OrderedDict or a doubly linked list`,
+        `Write a script that detects and kills runaway loops in test input using signal + timeout`,
+      ],
+    ]},
+    { name: "Data Structures & Comprehensions", tiers: [
+      [
+        `Given a list of server names, uppercase all of them using a list comprehension`,
+        `Count word frequency in a paragraph using a dict`,
+        `Remove duplicates from a list while preserving order`,
+        `Merge two dictionaries of server configs into one`,
+      ],
+      [
+        `Given log lines, build a dict comprehension mapping IP address to request count`,
+        `Write a function that groups a list of dicts by a key, like SQL GROUP BY`,
+        `Find the top 3 most frequent errors in a log file using collections.Counter`,
+        `Build a nested dict representing server → services → status, then query it`,
+      ],
+      [
+        `Implement a custom Queue and Stack class using collections.deque`,
+        `Build an in-memory key-value store class that supports TTL expiry`,
+        `Implement a Trie (prefix tree) for autocompleting server hostnames`,
+        `Write a function that deep-merges two nested config dictionaries, like YAML configs`,
+      ],
+      [
+        `Implement a graph (adjacency list) and write BFS/DFS to check reachability between two services`,
+        `Build a priority-queue task scheduler with heapq that respects priority and dependencies`,
+        `Implement a basic Bloom filter for "seen IP" checks with a target false-positive rate`,
+        `Design a simple in-memory write buffer inspired by an LSM-tree for a mock database`,
+      ],
+    ]},
+    { name: "Functions, OOP & Modules", tiers: [
+      [
+        `Write a function with default and keyword arguments to build a DB connection string`,
+        `Create a Server class with name, ip, and status attributes and a mock ping() method`,
+        `Write a function that accepts *args and **kwargs and logs everything it receives`,
+        `Split a script into two modules and import one from the other`,
+      ],
+      [
+        `Build a class hierarchy: a Database base class with MySQLDatabase and MongoDatabase subclasses overriding connect()`,
+        `Implement __str__ and __repr__ for a custom HealthCheckResult class`,
+        `Write a @timeit decorator that logs how long a function took to run`,
+        `Create a package with __init__.py that exposes a clean public API from several internal modules`,
+      ],
+      [
+        `Implement a @retry(times=3, delay=2) decorator with exponential backoff`,
+        `Build a context manager (__enter__/__exit__) that manages a DB connection and rolls back on exception`,
+        `Use abc.ABC to define an abstract Monitor interface, then implement PrometheusMonitor and DatadogMonitor`,
+        `Implement a class using __slots__ for a high-volume metrics object and benchmark the memory savings`,
+      ],
+      [
+        `Write a decorator factory that turns any function into a Prometheus-instrumented function (auto count + latency)`,
+        `Implement a plugin system using __init_subclass__ so new "checks" auto-register themselves`,
+        `Build a small dependency-injection container class for wiring up services in a script`,
+        `Implement a metaclass that enforces all subclasses define a run() method, failing at class-definition time otherwise`,
+      ],
+    ]},
+    { name: "Error Handling & Testing", tiers: [
+      [
+        `Wrap a file-read operation in try/except/finally, handling FileNotFoundError specifically`,
+        `Write a custom exception class called InvalidConfigError`,
+        `Write 3 unit tests for an add(a, b) function using unittest`,
+        `Use assert statements to validate function inputs in a small script`,
+      ],
+      [
+        `Write a function that retries a flaky operation up to N times, then raises after all attempts fail`,
+        `Use pytest fixtures to set up and tear down a mock database connection for tests`,
+        `Write parametrized pytest tests for a function that validates IP addresses`,
+        `Replace print statements with proper logging using DEBUG/INFO/WARNING/ERROR levels`,
+      ],
+      [
+        `Mock an external API call with unittest.mock and test both the success and failure paths`,
+        `Design a custom exception hierarchy (AppError → DBError, NetworkError) with error codes`,
+        `Use pytest.raises to test that a function raises the correct exception with the right message`,
+        `Implement structured JSON logging using a custom logging.Formatter`,
+      ],
+      [
+        `Write integration tests that spin up a real Docker container (e.g. MariaDB) via pytest fixtures and tear it down after`,
+        `Implement a circuit breaker class that opens after N failures and half-opens after a cooldown`,
+        `Build a test suite reaching 90%+ coverage for a small automation tool, measured with coverage.py`,
+        `Build a chaos-testing helper that randomly injects exceptions or delays into a function to test resilience`,
+      ],
+    ]},
+    { name: "File I/O, OS & Subprocess", tiers: [
+      [
+        `Read a text file line by line and count total lines, words, and characters`,
+        `List all files in a directory along with their sizes`,
+        `Read an environment variable with os.environ, providing a default fallback`,
+        `Run a shell command like "ls -la" with subprocess.run() and print the output`,
+      ],
+      [
+        `Parse a docker-compose.yml file with PyYAML and print every service name and image`,
+        `Write a script that tails a log file in real time, like tail -f`,
+        `Use subprocess.Popen to run a long process and stream its output line by line`,
+        `Walk a directory tree with os.walk() to find all .log files older than 7 days`,
+      ],
+      [
+        `Run mysqldump via subprocess, check the exit code, and upload the result only if it succeeded`,
+        `Build a log rotation script: compress logs older than N days, delete logs older than M days`,
+        `Use subprocess.run() with a timeout, catching TimeoutExpired safely for untrusted commands`,
+        `Parse "SHOW PROCESSLIST" output piped from a DB CLI and kill queries running longer than X seconds`,
+      ],
+      [
+        `Build a Python wrapper around the docker CLI that lists, inspects, and restarts unhealthy containers`,
+        `Implement a file watcher (watchdog or polling) that triggers a backup script when a config file changes`,
+        `Build a mini process supervisor that starts, monitors, and restarts multiple subprocesses on crash`,
+        `Build a tool that parses MySQL slow query logs and aggregates by query fingerprint, like pt-query-digest`,
+      ],
+    ]},
+    { name: "Concurrency & Async", tiers: [
+      [
+        `Use threading.Thread to run two functions concurrently and print when each finishes`,
+        `Simulate a slow task with time.sleep inside a thread and compare against sequential execution`,
+        `Write a basic producer-consumer example using queue.Queue`,
+        `Use concurrent.futures.ThreadPoolExecutor to run 5 tasks in parallel`,
+      ],
+      [
+        `Ping 20 servers concurrently using a thread pool and collect the results`,
+        `Use multiprocessing.Pool to parallelize a CPU-bound task, like hashing files, across cores`,
+        `Write an asyncio function that fetches 5 URLs concurrently using aiohttp`,
+        `Use a threading.Lock to protect a shared counter, then show the race condition bug without it`,
+      ],
+      [
+        `Build an async health-checker for 100+ endpoints with a concurrency limit via a semaphore`,
+        `Implement a producer-consumer pipeline with multiple workers and a graceful shutdown`,
+        `Write an asyncio script that manages retries and timeouts for concurrent API calls`,
+        `Compare threading vs multiprocessing vs asyncio on the same I/O-bound task and explain the results`,
+      ],
+      [
+        `Build an async job scheduler that runs tasks on cron-like expressions using asyncio`,
+        `Implement a work-stealing thread pool from scratch without concurrent.futures`,
+        `Write an async connection pool manager for a mock DB client with a max-connections queue`,
+        `Build a distributed lock using Redis to coordinate work across multiple script instances`,
+      ],
+    ]},
+    { name: "APIs, SDKs & Automation (Capstone)", tiers: [
+      [
+        `Use requests to GET a public API (e.g. GitHub) and print the JSON response`,
+        `Send a Slack message via an incoming webhook using requests.post`,
+        `Use boto3 to list all S3 buckets in your AWS account`,
+        `Connect to MongoDB with pymongo and list all databases`,
+      ],
+      [
+        `Use paramiko to SSH into a server, run "df -h", and parse the disk usage`,
+        `Use boto3 to start/stop EC2 instances by tag, including a dry-run mode`,
+        `Use the Docker Python SDK to list containers and restart any that are unhealthy`,
+        `Query Prometheus's HTTP API from Python and print the current value of a metric like "up"`,
+      ],
+      [
+        `Build a Slack bot that posts a daily DB health summary — connections, replication lag, slow queries`,
+        `Write a backup automation script: mysqldump/mongodump → compress → upload to S3 with retries`,
+        `Build a CLI (argparse or click) that wraps common DB admin tasks: backup, restore, check replication`,
+        `Pull metrics from Prometheus, evaluate a threshold, and page via webhook if it's breached`,
+      ],
+      [
+        `Build a full "ops toolkit" CLI with subcommands for backup, restore, health-check, and alerting, packaged as an installable pip package`,
+        `Write a custom Prometheus exporter in Python exposing DB metrics like replication lag on /metrics`,
+        `Build an orchestration script that provisions a Docker-based MongoDB replica set and verifies election`,
+        `Implement an automated incident responder: detect an issue via metrics, attempt auto-remediation, log and alert the outcome`,
+      ],
+    ]},
+  ],
+},
+{
+  id: "go", emoji: "🐹", title: "Go", color: "#14b8a6",
+  subtitle: "Fast, Compiled Tooling for Infra & CLIs",
+  topics: [
+    { name: "Syntax, Types & Control Flow", tiers: [
+      [
+        `Write a Go program that swaps two variables using multiple assignment`,
+        `Implement FizzBuzz in Go using a for loop and a switch statement`,
+        `Write a function that returns multiple values: a quotient and a remainder`,
+        `Use const and iota to define an enum-like set of log levels`,
+      ],
+      [
+        `Write a variadic function that sums any number of integers`,
+        `Implement a basic calculator using a switch statement on an operator string`,
+        `Convert a string to an int safely, handling the returned error`,
+        `Write a program demonstrating the difference between value and pointer receivers`,
+      ],
+      [
+        `Implement a generic Max[T] function using Go's type parameters`,
+        `Use named return values with a defer that modifies the return value on error`,
+        `Build a small state machine using typed constants and a switch over states`,
+        `Implement generic Filter[T] and Map[T] functions for slices`,
+      ],
+      [
+        `Implement your own generic Set[T] backed by a map with Add/Remove/Contains/Union/Intersect`,
+        `Use the reflect package to print all fields and values of an arbitrary struct`,
+        `Build a small tokenizer and parser for basic arithmetic expressions`,
+        `Implement a generic linked list and a generic binary search tree`,
+      ],
+    ]},
+    { name: "Structs, Methods & Interfaces", tiers: [
+      [
+        `Define a Server struct with Name, IP, Status fields and a String() method`,
+        `Write a method with a pointer receiver that updates a struct field`,
+        `Create a Pinger interface with Ping() error and implement it for Server`,
+        `Embed one struct inside another and access the embedded field`,
+      ],
+      [
+        `Define a Database interface (Connect, Query, Close) and implement it for MySQLDB and MongoDB structs`,
+        `Write a function that accepts an interface parameter and works polymorphically across types`,
+        `Implement the Stringer interface for a custom Duration type used in health reports`,
+        `Use struct tags like json:"name" to control JSON marshaling of a config struct`,
+      ],
+      [
+        `Design a plugin-style Check interface with DiskCheck, MemoryCheck, and ReplicationCheck implementations run from one loop`,
+        `Implement the error interface for a custom type carrying an error code and a wrapped cause`,
+        `Build a builder pattern for fluently constructing a complex config object`,
+        `Implement sort.Interface to sort a custom slice of Server structs by response time`,
+      ],
+      [
+        `Design an HTTP-middleware-style pattern using function types and interfaces for a CLI pipeline`,
+        `Implement a generic Repository[T] interface with in-memory and mock DB implementations`,
+        `Build a functional-options pattern for configuring a Client struct`,
+        `Implement a visitor pattern over a tree of interface types, like different Kubernetes resource kinds`,
+      ],
+    ]},
+    { name: "Error Handling & Testing", tiers: [
+      [
+        `Write a function returning (result, error) and handle it with "if err != nil"`,
+        `Create a custom error type that implements the error interface`,
+        `Write a table-driven test for a Divide function using the testing package`,
+        `Use t.Run subtests to organize multiple cases for one test function`,
+      ],
+      [
+        `Use errors.New and fmt.Errorf with %w to wrap errors, then unwrap with errors.Unwrap`,
+        `Write tests using testify's assert/require for cleaner assertions`,
+        `Distinguish error types using errors.Is and errors.As`,
+        `Use "go test -cover" to measure coverage and push a small package above 80%`,
+      ],
+      [
+        `Write a mock implementation of an interface, manually or with gomock, to unit test a dependent service`,
+        `Implement a sentinel error pattern (var ErrNotFound = errors.New(...)) used across a package`,
+        `Write benchmark tests with testing.B comparing two implementations via "go test -bench"`,
+        `Build integration tests using httptest.NewServer for a client function that calls an HTTP API`,
+      ],
+      [
+        `Write a fuzz test (go test -fuzz) for a function that parses untrusted input, like a config parser`,
+        `Implement a custom error type carrying structured context — retryable flag, HTTP status, trace ID`,
+        `Build a test harness using testcontainers-go to spin up a real DB container for integration tests`,
+        `Design a table-driven test suite with golden files for a CLI tool's output`,
+      ],
+    ]},
+    { name: "Concurrency (Goroutines & Channels)", tiers: [
+      [
+        `Launch 5 goroutines that each print a number, using sync.WaitGroup to wait for all of them`,
+        `Create a channel, send 3 values from a goroutine, and receive them in main`,
+        `Use a buffered channel to demonstrate how it differs from an unbuffered one`,
+        `Use select with two channels to receive from whichever is ready first`,
+      ],
+      [
+        `Build a worker pool: N workers pulling jobs from a channel and sending results to another`,
+        `Implement a fan-out/fan-in pattern that distributes work and merges results into one channel`,
+        `Use context.WithTimeout to cancel a long-running goroutine after a deadline`,
+        `Use sync.Mutex to protect a shared map, then demonstrate the race with "go run -race"`,
+      ],
+      [
+        `Implement a rate limiter using a buffered channel as a token bucket`,
+        `Build a 3-stage pipeline (generate → process → collect) connected via channels`,
+        `Propagate context.Context through multiple layers to support cancellation and timeouts end-to-end`,
+        `Build a "ping N servers with a concurrency limit" tool using a semaphore pattern`,
+      ],
+      [
+        `Build a concurrent-safe LRU cache using sync.Mutex or sync.Map with expiration`,
+        `Implement a simplified errgroup-like construct that cancels remaining goroutines on first error`,
+        `Build a goroutine-and-channel simulation of leader election across workers`,
+        `Implement graceful shutdown: catch OS signals, drain in-flight work, close resources cleanly`,
+      ],
+    ]},
+    { name: "Standard Library & Networking", tiers: [
+      [
+        `Write a simple HTTP server using net/http with one route returning "OK"`,
+        `Use the net/http client to GET a URL and print the response body`,
+        `Read a JSON file into a struct using encoding/json`,
+        `Read and write a config file using os.ReadFile and os.WriteFile`,
+      ],
+      [
+        `Build an HTTP server with multiple routes via http.ServeMux, including a /health endpoint`,
+        `Write a client that POSTs JSON to an API and parses the response into a struct`,
+        `Implement middleware that logs request duration on an net/http server`,
+        `Parse command-line flags (host, port, timeout) using the flag package`,
+      ],
+      [
+        `Build a REST API with routing, JSON validation, and basic error responses`,
+        `Implement an HTTP client with retries, exponential backoff, and a custom RoundTripper`,
+        `Write a TCP server using net.Listen that echoes back whatever it receives`,
+        `Build a Prometheus metrics endpoint with prometheus/client_golang exposing custom counters and gauges`,
+      ],
+      [
+        `Implement a reverse proxy using httputil.ReverseProxy with custom routing rules`,
+        `Build a gRPC service with a simple health-check RPC, plus a Go client for it`,
+        `Write a custom Prometheus exporter that scrapes a database and exposes replication lag`,
+        `Implement a minimal HTTP router from scratch, without third-party libraries, supporting path params`,
+      ],
+    ]},
+    { name: "CLI Tools & Packaging", tiers: [
+      [
+        `Build a CLI using the flag package that accepts --name and prints a greeting`,
+        `Structure a Go project with go.mod, main.go, and an internal/ package`,
+        `Write a CLI that reads from stdin and reverses each line`,
+        `Use go build to produce a binary and run it from the terminal`,
+      ],
+      [
+        `Build a cobra-based CLI with at least 2 subcommands, e.g. "mytool backup" and "mytool restore"`,
+        `Add persistent flags shared across all subcommands, like --config`,
+        `Load config with viper to support YAML plus environment-variable overrides`,
+        `Write a Makefile that cross-builds binaries for linux/amd64 and darwin/arm64`,
+      ],
+      [
+        `Build a CLI that checks DB health and outputs JSON or table format based on an --output flag`,
+        `Add bash/zsh shell-completion generation to your cobra CLI`,
+        `Implement a plugin architecture where subcommands are added via separate compiled binaries`,
+        `Add structured logging with configurable verbosity via -v/-vv flags`,
+      ],
+      [
+        `Build a full "ops CLI" — backup, restore, health-check, alert-test — packaged and released with goreleaser`,
+        `Implement auto-update: check GitHub releases and download+replace the running binary`,
+        `Build a CLI that wraps kubectl/docker commands with opinionated defaults and safety confirmations`,
+        `Package your CLI as a Homebrew formula and a .deb/.rpm package`,
+      ],
+    ]},
+    { name: "Advanced & Capstone", tiers: [
+      [
+        `Use client-go's Clientset to list all pods in the default namespace`,
+        `Write a Go program using the Docker SDK to list running containers`,
+        `Parse a Kubernetes YAML manifest into Go structs using k8s.io/apimachinery`,
+        `Build a tiny webhook receiver that logs incoming Prometheus Alertmanager alerts`,
+      ],
+      [
+        `Write a controller loop (informer + workqueue) that logs when a Pod enters CrashLoopBackOff`,
+        `Build a client-go tool that cordons a node and safely drains its pods`,
+        `Implement a webhook handler that forwards formatted Alertmanager alerts to Slack`,
+        `Use the Docker SDK to build an image programmatically from a Dockerfile`,
+      ],
+      [
+        `Build a minimal Kubernetes Operator with controller-runtime/kubebuilder that reconciles a custom BackupSchedule resource`,
+        `Implement a validating admission webhook that rejects Pods without resource limits set`,
+        `Write a service exposing both gRPC and REST (via grpc-gateway) for an internal ops API`,
+        `Build a distributed task queue using etcd for leader election and work distribution`,
+      ],
+      [
+        `Build a production-style Operator: CRD, controller, status reporting, and e2e tests with envtest`,
+        `Implement a custom scheduler extender that scores nodes using a live custom metric like DB load`,
+        `Build a prototype service-mesh sidecar proxy in Go with basic L7 routing, metrics, and mTLS`,
+        `Design a mini distributed key-value store in Go using Raft consensus`,
+      ],
+    ]},
+  ],
+},
+{
+  id: "k8s", emoji: "☸️", title: "Kubernetes", color: "#0ea5e9",
+  subtitle: "Objects, Networking, Security & Operators",
+  topics: [
+    { name: "Core Objects (Pods, ReplicaSets, Deployments)", tiers: [
+      [
+        `Create a Pod running nginx with "kubectl run", then inspect it with "describe"`,
+        `Write a Pod YAML manifest from scratch and apply it with "kubectl apply -f"`,
+        `Create a Deployment with 3 replicas, then scale it to 5 with "kubectl scale"`,
+        `Delete a pod managed by a Deployment and watch it get recreated automatically`,
+      ],
+      [
+        `Write a Deployment with resource requests/limits and a rolling-update strategy (maxSurge/maxUnavailable)`,
+        `Filter pods by label using "kubectl get pods -l app=X"`,
+        `Perform a rolling update by changing the image tag, watching "kubectl rollout status"`,
+        `Roll back a bad deployment using "kubectl rollout undo"`,
+      ],
+      [
+        `Design a Deployment with pod anti-affinity so replicas avoid landing on the same node`,
+        `Debug a pod stuck in ImagePullBackOff or CrashLoopBackOff using describe and "logs --previous"`,
+        `Use "kubectl patch" to update a Deployment's image without editing the full YAML`,
+        `Implement a manual blue-green deployment using two Deployments and a Service selector switch`,
+      ],
+      [
+        `Design a canary strategy using two Deployments behind one Service with weighted traffic`,
+        `Debug and fix a Deployment whose misconfigured readiness probe makes rolling updates hang forever`,
+        `Build a custom kubectl plugin that lists all Deployments with outdated images across namespaces`,
+        `Design a zero-downtime migration from a Deployment to a StatefulSet without data loss`,
+      ],
+    ]},
+    { name: "Services & Networking", tiers: [
+      [
+        `Create a ClusterIP Service for a Deployment, then curl it from another pod`,
+        `Create a NodePort Service and access it via <NodeIP>:<NodePort>`,
+        `Use "kubectl port-forward" to reach a pod directly from your local machine`,
+        `Inspect Service endpoints using "kubectl get endpoints"`,
+      ],
+      [
+        `Write an Ingress routing /api to one Service and / to another via the NGINX Ingress Controller`,
+        `Set up cert-manager with a ClusterIssuer to auto-provision TLS certs for an Ingress`,
+        `Create a headless Service for a StatefulSet and resolve individual pod DNS names`,
+        `Debug a Service with no endpoints by finding and fixing the label-selector mismatch`,
+      ],
+      [
+        `Write a NetworkPolicy that denies all traffic by default, then allows frontend → backend on one port`,
+        `Implement Ingress path-rewriting and host-based routing for multiple apps sharing one Ingress`,
+        `Set up an internal-only Service and test DNS resolution across namespaces`,
+        `Troubleshoot cross-namespace connectivity by tracing DNS, Service, and NetworkPolicy configuration`,
+      ],
+      [
+        `Deploy a service mesh (Istio or Linkerd) and configure mTLS between two services`,
+        `Implement a 90/10 canary traffic split using Istio's VirtualService and DestinationRule`,
+        `Design a multi-cluster networking setup, e.g. via Submariner or Istio multi-cluster`,
+        `Build a NetworkPolicy audit tool that flags overly permissive policies across the cluster`,
+      ],
+    ]},
+    { name: "Config, Secrets & Storage", tiers: [
+      [
+        `Create a ConfigMap from a literal value and mount it as an environment variable in a Pod`,
+        `Create a Secret and mount it as a volume in a Pod, then read the file inside`,
+        `Create a PersistentVolumeClaim, mount it in a Pod, write a file, delete the pod, and verify persistence`,
+        `Use "kubectl create configmap --from-file" to load an entire config file`,
+      ],
+      [
+        `Deploy MongoDB as a StatefulSet with a PVC-based volumeClaimTemplate per replica`,
+        `Update a ConfigMap and trigger a rolling restart of dependent pods to pick up new values`,
+        `Inject DB credentials via envFrom from a Secret and verify they're only base64, not plaintext, in "get -o yaml"`,
+        `Configure a StorageClass and dynamic provisioning for PVCs on your cluster`,
+      ],
+      [
+        `Integrate sealed-secrets or SOPS so secrets can be safely committed to Git in encrypted form`,
+        `Set up the External Secrets Operator to sync a secret from AWS SSM into a Kubernetes Secret`,
+        `Delete and recreate a StatefulSet pod and validate its identity — stable network ID plus storage — is preserved`,
+        `Implement CSI VolumeSnapshots for a StatefulSet's PVC, then restore from the snapshot`,
+      ],
+      [
+        `Build a full secrets pipeline — Vault or SSM to External Secrets Operator to app — with rotation tested end-to-end`,
+        `Design a DR plan for stateful workloads: automated PVC snapshotting, cross-region backup, and a restore runbook`,
+        `Build a custom admission webhook validating that all Secrets carry required labels and annotations`,
+        `Migrate a StatefulSet's storage between StorageClasses with zero data loss using volume clone plus PVC swap`,
+      ],
+    ]},
+    { name: "Scheduling, Probes & Scaling", tiers: [
+      [
+        `Add a liveness probe to a Deployment, break the health endpoint, and observe the pod restart`,
+        `Add a readiness probe and observe the pod get removed from Service endpoints on failure`,
+        `Set CPU/memory requests and limits and observe "kubectl describe node" allocation`,
+        `Create a CronJob that runs a simple echo command every minute`,
+      ],
+      [
+        `Configure a startup probe for a slow-starting app so liveness doesn't kill it prematurely`,
+        `Set up an HPA based on CPU utilization, then load-test it to trigger scaling`,
+        `Use node affinity to schedule a workload only on nodes labeled e.g. disktype=ssd`,
+        `Create a Job with backoffLimit and completions/parallelism for a batch task`,
+      ],
+      [
+        `Configure taints on a node and tolerations on a pod so only DB workloads run there`,
+        `Set up HPA on a custom metric, like queue length, via the Prometheus Adapter`,
+        `Implement Pod Disruption Budgets to protect a StatefulSet during voluntary node drains`,
+        `Debug a Pending pod caused by insufficient resources, resolving via scaling or requests tuning`,
+      ],
+      [
+        `Configure the Cluster Autoscaler or Karpenter so node pools scale with pending pod demand`,
+        `Run the Vertical Pod Autoscaler in recommendation mode and use its output to right-size a workload`,
+        `Design a multi-tier PriorityClass scheme so critical DB pods can preempt lower-priority batch jobs`,
+        `Build a custom scheduler extender that scores nodes using live DB replication lag`,
+      ],
+    ]},
+    { name: "Security & RBAC", tiers: [
+      [
+        `Create a ServiceAccount, bind it to a Pod, and verify the pod uses it via exec plus token inspection`,
+        `Create a Role granting get/list on Pods in one namespace and bind it with a RoleBinding`,
+        `Attempt an action without proper RBAC permissions and observe the Forbidden error`,
+        `Use "kubectl auth can-i" to check whether a user or service account can perform an action`,
+      ],
+      [
+        `Create a ClusterRole for read-only access across all namespaces, bound via ClusterRoleBinding`,
+        `Set a restricted Pod Security Standard at the namespace level and fix a Pod that violates it`,
+        `Configure a ServiceAccount with no automounted token for pods that don't need API access`,
+        `Audit existing RBAC bindings and identify any overly broad cluster-admin grants`,
+      ],
+      [
+        `Implement least-privilege RBAC for a CI/CD service account limited to specific namespaces and resource types`,
+        `Set up OPA Gatekeeper with a constraint denying Pods that run as root`,
+        `Combine NetworkPolicies with namespace isolation for a basic multi-tenant security model`,
+        `Write an audit-logging policy and review kube-apiserver logs for suspicious exec/delete actions`,
+      ],
+      [
+        `Build a custom validating webhook enforcing org policy — no ":latest" tags, mandatory labels`,
+        `Design a full multi-tenancy model — RBAC, NetworkPolicy, ResourceQuota — for a shared cluster with 5+ teams`,
+        `Integrate an image-scanning admission controller (OPA or Kyverno) that blocks critical-CVE images`,
+        `Run a full RBAC and security posture audit with kube-bench/kube-hunter and remediate the findings`,
+      ],
+    ]},
+    { name: "Helm & Package Management", tiers: [
+      [
+        `Install a chart from a public repo, e.g. bitnami/nginx, using Helm`,
+        `Use "helm show values" to inspect a chart's configurable values before installing`,
+        `Override a value at install time with --set, e.g. replica count`,
+        `Uninstall a Helm release and verify all resources are removed`,
+      ],
+      [
+        `Write your own Helm chart for a simple app — Deployment, Service, ConfigMap — with a configurable values.yaml`,
+        `Use Helm templating (if/range, .Values.x) to conditionally render resources`,
+        `Package and version your chart, then push it to a local or private chart repository`,
+        `Use "helm upgrade --install" in a CI pipeline for idempotent deploys`,
+      ],
+      [
+        `Structure a chart with subcharts for a multi-service app`,
+        `Implement Helm hooks (pre-install, post-upgrade) to run a DB migration job before the app starts`,
+        `Use Helmfile to manage multiple releases across environments declaratively`,
+        `Write "helm test" chart tests that verify the app responds correctly after install`,
+      ],
+      [
+        `Build a fully parameterized platform chart that deploys your entire 3-tier app across dev/staging/prod`,
+        `Implement a chart CI pipeline: lint, template, kubeval/kubeconform validation, and automated version bump`,
+        `Design a multi-tenant chart supporting per-tenant value overrides and isolated namespaces`,
+        `Migrate a set of manually-managed manifests into a well-structured, reusable chart library`,
+      ],
+    ]},
+    { name: "CRDs, Operators & Admission Control", tiers: [
+      [
+        `Define a simple CRD, e.g. a Website with a url field, and create an instance of it`,
+        `Install an existing Operator, like Prometheus Operator, and create a ServiceMonitor resource`,
+        `Inspect a CRD's status subresource with "kubectl get <crd> -o yaml"`,
+        `Use "kubectl explain" to inspect the schema of a CRD`,
+      ],
+      [
+        `Write a basic controller (kubebuilder or client-go informers) that watches your custom resource and logs changes`,
+        `Add a status subresource to your CRD and have the controller update it during reconciliation`,
+        `Create a MutatingWebhookConfiguration that injects a sidecar container into labeled pods`,
+        `Use Prometheus Operator's PodMonitor/ServiceMonitor CRDs to scrape a custom app's metrics`,
+      ],
+      [
+        `Build a controller that reconciles a BackupSchedule CRD into a corresponding CronJob`,
+        `Implement a ValidatingWebhookConfiguration enforcing required annotations/labels on Deployments`,
+        `Add finalizers to your CRD so the controller cleans up external resources before deletion`,
+        `Write e2e tests for your operator using envtest or kind`,
+      ],
+      [
+        `Build a production-grade Operator — CRD, controller, webhook, status, events, e2e tests — published as a chart`,
+        `Implement a GitOps-controlled multi-cluster Operator reconciling resources from one control plane`,
+        `Design a custom scheduler admission flow combining a validating webhook with a scheduler extender`,
+        `Contribute a bug fix or feature to an existing open-source Kubernetes Operator project`,
+      ],
+    ]},
+    { name: "Troubleshooting & Capstone", tiers: [
+      [
+        `Given a Pod stuck Pending, use "kubectl describe pod" to find the exact reason and fix it`,
+        `Given a Service that isn't routing traffic, check selectors, endpoints, and pod labels step by step`,
+        `Use "kubectl logs -f --tail=100" and "exec -it" to debug a misbehaving app`,
+        `Simulate and fix a CrashLoopBackOff caused by a bad environment variable`,
+      ],
+      [
+        `Debug high memory usage causing OOMKills using "kubectl top pod" and adjusted limits`,
+        `Trace slow DNS resolution inside a pod back to CoreDNS config or a NetworkPolicy`,
+        `Use "kubectl get events --sort-by=.lastTimestamp" cluster-wide to spot cascading failures`,
+        `Debug an Ingress returning 502/504 by tracing Ingress logs, Service, and pod readiness`,
+      ],
+      [
+        `Reproduce and resolve a noisy-neighbor scenario where one workload starves others on a node`,
+        `Diagnose simulated etcd performance issues affecting API server responsiveness in a large cluster`,
+        `Write a full incident runbook: "database pod won't start after node failure", diagnosis to recovery`,
+        `Simulate a full AZ/node-pool outage and verify PodDisruptionBudgets and multi-AZ scheduling actually protect availability`,
+      ],
+      [
+        `Run a chaos engineering exercise with Chaos Mesh or Litmus against your 3-tier app and document what broke`,
+        `Build a production-readiness checklist and apply it end-to-end — probes, PDBs, limits, RBAC, NetworkPolicy, monitoring, backups`,
+        `Lead a "game day": simulate a full region failure and execute your DR runbook live, timing the recovery`,
+        `Capstone: design, deploy, and operate a full platform for your 3-tier app, then intentionally break 5 things and fix them one by one`,
+      ],
+    ]},
+  ],
+},
+{
+  id: "iac", emoji: "🏗️", title: "Infrastructure as Code", color: "#a855f7",
+  subtitle: "Terraform · Ansible · GitOps",
+  topics: [
+    { name: "Terraform Basics (HCL, Providers, Resources)", tiers: [
+      [
+        `Provision a single S3 bucket and run init, plan, apply, destroy`,
+        `Provision an EC2 instance with a specific AMI and instance type`,
+        `Use the random provider to generate a random suffix for a resource name`,
+        `Tag all your resources and verify them in the cloud console`,
+      ],
+      [
+        `Provision a VPC with public/private subnets, an Internet Gateway, and route tables`,
+        `Add explicit depends_on where an implicit dependency isn't inferred correctly`,
+        `Provision a security group allowing SSH and HTTP from specific CIDR blocks`,
+        `Use "terraform fmt" and "terraform validate" as part of your workflow`,
+      ],
+      [
+        `Provision an RDS MySQL instance with a subnet group, parameter group, and automated backups`,
+        `Provision 3 EC2 instances with count, then refactor to for_each with a map of configs`,
+        `Write a null_resource with a local-exec provisioner, and explain why provisioners are a last resort`,
+        `Use "terraform console" to test expressions and understand how your config is evaluated`,
+      ],
+      [
+        `Design a full VPC + EC2 + RDS + ALB + Security Group architecture, parameterized and validated with tflint`,
+        `Sketch a basic custom Terraform provider for a simple internal API`,
+        `Use dynamic blocks to generate repeated nested config, like multiple security-group ingress rules`,
+        `Provision infrastructure across two providers, e.g. AWS plus Cloudflare DNS, with correct dependency ordering`,
+      ],
+    ]},
+    { name: "Terraform State, Variables & Outputs", tiers: [
+      [
+        `Define typed input variables with defaults and reference them in resources`,
+        `Define outputs for a resource, e.g. an EC2 public IP, and view them with "terraform output"`,
+        `Supply variable values with a terraform.tfvars file instead of CLI flags`,
+        `Run "terraform state list" and "terraform state show" to inspect current state`,
+      ],
+      [
+        `Configure a remote S3 backend with state locking via DynamoDB`,
+        `Use "terraform import" to bring an existing manually-created resource under management`,
+        `Use locals to compute derived values, like a combined name prefix, reused across resources`,
+        `Rename a resource with "terraform state mv" without destroying and recreating it`,
+      ],
+      [
+        `Simulate state drift: change a resource manually in the console, plan, and reconcile`,
+        `Set up separate state files per environment using workspaces or separate backend configs`,
+        `Use "terraform state rm" plus import to fix state after a resource was deleted outside Terraform`,
+        `Write a variable validation block enforcing an allowed set of instance types`,
+      ],
+      [
+        `Design cross-stack references with terraform_remote_state, e.g. a networking stack feeding an app stack`,
+        `Recover from a corrupted or lost state file by rebuilding it via import for a moderately complex setup`,
+        `Implement a state-file encryption and access-control strategy for a multi-team setup`,
+        `Build a script that audits Terraform state against actual cloud resources to detect untracked drift`,
+      ],
+    ]},
+    { name: "Terraform Modules, Workspaces & Advanced", tiers: [
+      [
+        `Refactor a single main.tf into a reusable module with its own variables and outputs`,
+        `Call your module twice with different inputs, e.g. dev and prod EC2 configs`,
+        `Create dev and prod workspaces and deploy the same config with different variables per workspace`,
+        `Use a public Terraform Registry module, e.g. terraform-aws-modules/vpc`,
+      ],
+      [
+        `Design nested modules, e.g. a network module used inside an app module`,
+        `Use for_each over a module block to provision the same module multiple times with different configs`,
+        `Version your internal module with Git tags and reference a specific version in the source`,
+        `Write module-level documentation describing inputs, outputs, and usage examples`,
+      ],
+      [
+        `Provision an EKS cluster with the terraform-aws-modules/eks module, including node groups and IAM roles`,
+        `Set up CI that runs "terraform plan" on PRs and "apply" on merge, with manual approval gating`,
+        `Load environment-specific tfvars files conditionally in CI`,
+        `Use moved blocks to safely refactor resource addresses without destroy/recreate`,
+      ],
+      [
+        `Build an internal module library — network, compute, database, monitoring — that stands up a full environment from one root config`,
+        `Design a multi-account/multi-region architecture with proper provider aliasing and remote-state composition`,
+        `Add policy-as-code checks (Sentinel or OPA/Conftest) gating "terraform plan" output in CI`,
+        `Lead a brownfield migration: import and modularize manually-created resources into a clean, tested structure with zero downtime`,
+      ],
+    ]},
+    { name: "Ansible Basics (Inventory, Playbooks)", tiers: [
+      [
+        `Write a static inventory file with 3 hosts grouped under [webservers]`,
+        `Run "ansible all -m ping" and "ansible webservers -a uptime" against your inventory`,
+        `Write a playbook that installs and starts nginx on all hosts in a group`,
+        `Use the copy module to place a file on remote hosts and command/shell to run commands`,
+      ],
+      [
+        `Write a playbook using "become: true" to run tasks with sudo privileges`,
+        `Use vars in a playbook to parameterize package names/versions across OS families`,
+        `Use "when" conditionals to run tasks only on hosts matching a fact, like ansible_os_family`,
+        `Use "register" to capture command output and use it in a later conditional task`,
+      ],
+      [
+        `Write a playbook that installs and configures MariaDB, creating a database and user`,
+        `Use handlers with "notify" to restart a service only when its config file actually changes`,
+        `Build a playbook that configures a full LAMP-style stack across multiple hosts in the right order`,
+        `Run ansible-lint on your playbooks and fix every best-practice warning`,
+      ],
+      [
+        `Write a playbook that performs a rolling restart across a cluster using "serial" to limit batch size`,
+        `Implement a zero-downtime deployment playbook that only proceeds to the next batch if health checks pass`,
+        `Build a playbook that provisions and joins a full 3-node MariaDB Galera or MongoDB replica set from scratch`,
+        `Design an idempotency test: run your playbook twice and assert the second run reports zero changes`,
+      ],
+    ]},
+    { name: "Ansible Advanced (Roles, Vault, Templates)", tiers: [
+      [
+        `Refactor a playbook into a role using "ansible-galaxy init"`,
+        `Use a Jinja2 template to generate a config file, like nginx.conf, with variable substitution`,
+        `Encrypt a variables file with "ansible-vault encrypt" and reference it in a playbook`,
+        `Use defaults/main.yml in a role to provide sensible default variable values`,
+      ],
+      [
+        `Build a reusable "MariaDB setup" role that's configurable across dev/staging/prod`,
+        `Use ansible-vault with a vault password file, integrated into a CI pipeline`,
+        `Use loops to create multiple MySQL users/databases from a list variable`,
+        `Structure a multi-role playbook — common, mariadb, monitoring — applied to different host groups`,
+      ],
+      [
+        `Publish a role to Ansible Galaxy or a private Git source and consume it via requirements.yml`,
+        `Implement dynamic inventory, e.g. the AWS EC2 plugin, so hosts are discovered automatically by tag`,
+        `Use ansible-vault with multiple vault IDs to separate dev and prod secrets`,
+        `Write custom Jinja2 filters, e.g. formatting byte sizes into human-readable strings`,
+      ],
+      [
+        `Build a complete configuration-management system for your DB fleet, driven by dynamic inventory`,
+        `Write a custom Ansible module in Python that checks replica-set health and returns structured facts`,
+        `Integrate Ansible with Molecule for automated role testing — idempotency and functional tests in Docker`,
+        `Design a secrets-rotation workflow that rotates DB passwords fleet-wide without downtime`,
+      ],
+    ]},
+    { name: "GitOps (ArgoCD/Flux) & Policy as Code", tiers: [
+      [
+        `Install ArgoCD and connect it to a Git repo containing a simple app manifest`,
+        `Create an ArgoCD Application and manually sync it, observing the deployed resources`,
+        `Make a change in Git and watch ArgoCD detect drift and offer to sync`,
+        `Explore the ArgoCD UI/CLI to inspect application health and sync status`,
+      ],
+      [
+        `Set up automated sync policies — self-heal and prune — for continuous reconciliation`,
+        `Structure a repo using the "app of apps" pattern to manage multiple Applications from one parent`,
+        `Use Kustomize overlays — base plus dev/staging/prod — with ArgoCD for environment-specific config`,
+        `Set up Flux and compare its pull-based model to ArgoCD's`,
+      ],
+      [
+        `Build a full pipeline: CI builds and pushes an image, updates the tag in a manifest repo, ArgoCD auto-syncs`,
+        `Configure ArgoCD RBAC/SSO so teams can only manage their own Applications and projects`,
+        `Use Argo Rollouts for progressive delivery with metrics-based automated analysis`,
+        `Write OPA/Conftest policies that run in CI against manifests before they reach the GitOps repo`,
+      ],
+      [
+        `Design a multi-cluster GitOps architecture with a proper promotion workflow across dev/staging/prod`,
+        `Implement Kyverno or OPA Gatekeeper policies enforced in both CI and at admission time`,
+        `Build a self-service platform where policy enforcement and deployment status are visible on a dashboard`,
+        `Capstone: combine Terraform, Ansible, ArgoCD, and OPA into one documented platform with an incident-recovery runbook`,
+      ],
+    ]},
+    { name: "Capstone: Full Automation Pipeline", tiers: [
+      [
+        `Provision a VPC + EC2 with Terraform, then configure it with an Ansible playbook that installs Docker`,
+        `Chain the two tools: Terraform outputs the EC2 IP, which dynamically feeds an Ansible inventory`,
+        `Provision a small EKS or self-managed cluster with Terraform, then deploy a Helm chart onto it manually`,
+        `Set up a CI pipeline that runs "terraform plan" on every pull request`,
+      ],
+      [
+        `Build a pipeline where Terraform provisions infra, Ansible configures the OS, and Helm deploys the app`,
+        `Add automated checks to the pipeline: terraform validate, ansible-lint, helm lint, plus a post-deploy smoke test`,
+        `Implement environment promotion: auto-deploy to dev, but require manual approval for prod`,
+        `Store all secrets properly with Vault or SSM instead of hardcoding them anywhere in the pipeline`,
+      ],
+      [
+        `Build a self-service "environment factory" pipeline that spins up and tears down a full isolated environment per feature branch`,
+        `Implement scheduled drift detection: run "terraform plan" nightly and alert on any detected drift`,
+        `Add policy-as-code gates that block risky changes, like deleting a production database, without explicit override`,
+        `Instrument the whole pipeline with observability — duration, failure rate, deployment frequency — in Grafana`,
+      ],
+      [
+        `Design your "dream platform": Terraform, Ansible, Kubernetes + Helm, ArgoCD, OPA, and Prometheus/Grafana, all integrated`,
+        `Write a disaster-recovery runbook and test it live by destroying and rebuilding your dev environment from code and backups`,
+        `Present your platform architecture as if defending it in a senior DevOps/SRE interview`,
+        `Open-source one component, like your Terraform module library or Ansible roles, with documentation, versioning, and tests`,
+      ],
+    ]},
+  ],
+},
+];
+
+/* ══════════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════════ */
+let activeTrack = tracks[0].id;
+let activeTopic = 0;
+let completed = {};
+
+function saveState() {
+  try {
+    localStorage.setItem("dpe_completed", JSON.stringify(completed));
+    localStorage.setItem("dpe_track", activeTrack);
+    localStorage.setItem("dpe_topic", String(activeTopic));
+  } catch (e) {}
+}
+function loadState() {
+  try {
+    const c = localStorage.getItem("dpe_completed");
+    if (c) completed = JSON.parse(c);
+    const t = localStorage.getItem("dpe_track");
+    if (t && tracks.some(tr => tr.id === t)) activeTrack = t;
+    const p = localStorage.getItem("dpe_topic");
+    if (p) activeTopic = parseInt(p, 10) || 0;
+  } catch (e) {}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HELPERS
+   ══════════════════════════════════════════════════════════════ */
+function key(trackId, topicIdx, tierIdx, exIdx) {
+  return `${trackId}::${topicIdx}::${tierIdx}::${exIdx}`;
+}
+
+function countTier(trackId, topicIdx, tierIdx, exercises) {
+  let done = 0;
+  exercises.forEach((_, exIdx) => { if (completed[key(trackId, topicIdx, tierIdx, exIdx)]) done++; });
+  return { done, total: exercises.length };
+}
+
+function countTopic(track, topicIdx) {
+  const topic = track.topics[topicIdx];
+  let done = 0, total = 0;
+  topic.tiers.forEach((exs, tierIdx) => {
+    const c = countTier(track.id, topicIdx, tierIdx, exs);
+    done += c.done; total += c.total;
+  });
+  return { done, total };
+}
+
+function countTrack(track) {
+  let done = 0, total = 0;
+  track.topics.forEach((_, i) => {
+    const c = countTopic(track, i);
+    done += c.done; total += c.total;
+  });
+  return { done, total };
+}
+
+function countTrackTier(track, tierIdx) {
+  let done = 0, total = 0;
+  track.topics.forEach((topic, topicIdx) => {
+    const c = countTier(track.id, topicIdx, tierIdx, topic.tiers[tierIdx]);
+    done += c.done; total += c.total;
+  });
+  return { done, total };
+}
+
+function countAll() {
+  let done = 0, total = 0;
+  tracks.forEach(t => {
+    const c = countTrack(t);
+    done += c.done; total += c.total;
+  });
+  return { done, total };
+}
+
+function pct(done, total) { return total === 0 ? 0 : Math.round((done / total) * 100); }
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER
+   ══════════════════════════════════════════════════════════════ */
+function render() {
+  renderGlobalProgress();
+  renderLegend();
+  renderTrackTabs();
+  renderMain();
+}
+
+function renderGlobalProgress() {
+  const { done, total } = countAll();
+  document.getElementById("globalBarFill").style.width = pct(done, total) + "%";
+  document.getElementById("globalProgressLabel").textContent = `${done} / ${total}`;
+}
+
+function renderLegend() {
+  const el = document.getElementById("legend");
+  el.innerHTML = LEVELS.map(l => `
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${l.color}"></span>${l.label}
+    </div>
+  `).join("");
+}
+
+function renderTrackTabs() {
+  const el = document.getElementById("trackTabs");
+  el.innerHTML = tracks.map(t => {
+    const { done, total } = countTrack(t);
+    const active = t.id === activeTrack;
+    return `
+      <button class="track-tab" data-action="select-track" data-track-id="${t.id}"
+        style="border-bottom-color:${active ? t.color : 'transparent'}">
+        <span class="t-emoji">${t.emoji}</span>
+        <span class="t-name" style="color:${active ? t.color : 'var(--muted)'}">${t.title}</span>
+        <span class="t-pct" style="color:${active ? t.color + 'aa' : 'var(--faint)'}">${pct(done,total)}%</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function renderMain() {
+  const track = tracks.find(t => t.id === activeTrack);
+  if (activeTopic >= track.topics.length) activeTopic = 0;
+  const main = document.getElementById("mainContent");
+
+  main.innerHTML = `
+    ${renderTrackCard(track)}
+    <div class="topic-selector" id="topicSelector"></div>
+    <div id="topicPanel"></div>
+    ${renderOverviewPanel(track)}
+    ${renderHowTo()}
+  `;
+
+  renderTopicSelector(track);
+  renderTopicPanel(track);
+}
+
+function renderTrackCard(track) {
+  const { done, total } = countTrack(track);
+  const tierChips = LEVELS.map((l, i) => {
+    const c = countTrackTier(track, i);
+    return `
+      <div class="tier-stat-chip">
+        <div class="tier-stat-name" style="color:${l.color}">${l.label.split(" ")[0].split("/")[0]}</div>
+        <div class="tier-stat-frac">${c.done}/${c.total}</div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <div class="track-card" style="background:linear-gradient(135deg, ${track.color}1c 0%, var(--panel) 65%); border-color:${track.color}33">
+      <div class="track-card-top">
+        <div>
+          <div class="track-card-emoji">${track.emoji}</div>
+          <div class="track-card-title">${track.title}</div>
+          <div class="track-card-subtitle">${track.subtitle}</div>
+          <div class="track-card-count">${track.topics.length} topics · ${total} exercises</div>
+        </div>
+        <div>
+          <div class="track-card-pct" style="color:${track.color}">${pct(done,total)}%</div>
+          <div class="track-card-pct-label">complete</div>
+        </div>
+      </div>
+      <div class="track-progress-wrap">
+        <div class="track-progress-fill" style="width:${pct(done,total)}%; background:linear-gradient(90deg, ${track.color}, ${track.color}99)"></div>
+      </div>
+      <div class="tier-stats-grid">${tierChips}</div>
+    </div>
+  `;
+}
+
+function renderTopicSelector(track) {
+  const el = document.getElementById("topicSelector");
+  el.innerHTML = track.topics.map((topic, i) => {
+    const c = countTopic(track, i);
+    const active = i === activeTopic;
+    return `
+      <button class="topic-pill" data-action="select-topic" data-topic-idx="${i}"
+        style="border-color:${active ? track.color : 'var(--line)'}; background:${active ? track.color + '1f' : 'var(--panel)'}; color:${active ? track.color : 'var(--muted)'}">
+        ${c.done === c.total ? `<span style="color:${track.color}">✓</span>` : `<span>${i+1}.</span>`}
+        ${topic.name}
+        <span class="p-pct" style="color:${active ? track.color + 'aa' : 'var(--faint)'}">${pct(c.done,c.total)}%</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function renderTopicPanel(track) {
+  const topic = track.topics[activeTopic];
+  const el = document.getElementById("topicPanel");
+
+  const tierCards = topic.tiers.map((exercises, tierIdx) => {
+    const level = LEVELS[tierIdx];
+    const c = countTier(track.id, activeTopic, tierIdx, exercises);
+
+    const rows = exercises.map((text, exIdx) => {
+      const k = key(track.id, activeTopic, tierIdx, exIdx);
+      const done = !!completed[k];
+      return `
+        <div class="ex-row" data-action="toggle-ex" data-track-id="${track.id}" data-topic-idx="${activeTopic}" data-tier-idx="${tierIdx}" data-ex-idx="${exIdx}">
+          <div class="ex-num ${done ? 'done' : ''}" style="background:${done ? level.color : 'transparent'}; border-color:${done ? level.color : 'var(--faint)'}">
+            ${done ? '✓' : exIdx + 1}
+          </div>
+          <div class="ex-text ${done ? 'done' : ''}">${text}</div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="tier-card" style="border-left-color:${level.color}">
+        <div class="tier-head">
+          <div class="tier-head-left">
+            <span class="tier-badge" style="background:${level.color}22; color:${level.color}">${level.label}</span>
+            <span class="tier-count">${c.done}/${c.total}</span>
+          </div>
+          <div class="tier-mini-bar"><div class="tier-mini-fill" style="width:${pct(c.done,c.total)}%; background:${level.color}"></div></div>
+        </div>
+        <div class="tier-body">${rows}</div>
+      </div>
+    `;
+  }).join("");
+
+  el.innerHTML = tierCards;
+}
+
+function renderOverviewPanel(track) {
+  const rows = track.topics.map((topic, i) => {
+    const c = countTopic(track, i);
+    const isActive = i === activeTopic;
+    return `
+      <div class="overview-row" data-action="select-topic" data-topic-idx="${i}">
+        <div class="overview-num" style="color:${c.done === c.total ? track.color : 'var(--faint)'}">${c.done === c.total ? '✓' : i+1}</div>
+        <div style="flex:1;min-width:0">
+          <div class="overview-title" style="color:${isActive ? track.color : '#a9afc0'}">${topic.name}</div>
+          <div class="overview-sub">${c.total} exercises</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="overview-bar-wrap"><div class="overview-bar-fill" style="width:${pct(c.done,c.total)}%; background:${track.color}"></div></div>
+          <div class="overview-pct" style="color:${track.color}">${pct(c.done,c.total)}%</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <div class="overview-panel">
+      <div class="overview-label">${track.title} · All Topics</div>
+      ${rows}
+    </div>
+  `;
+}
+
+function renderHowTo() {
+  const tips = [
+    ["Don't skip to Expert", "Finish Basic + Intermediate across every topic in a track before touching Advanced."],
+    ["One exercise ≠ one day", "Some Basics take 10 minutes. Some Experts take a full weekend. Let the exercise set the pace."],
+    ["Redo, don't just read", "If you get stuck, rebuild the exercise from scratch — don't just glance at old code and check the box."],
+    ["Weak topic? Do it twice", "If a topic feels shaky, clear every tier there before moving to the next topic."],
+  ];
+  return `
+    <div class="howto-panel">
+      <div class="howto-title">How to use this practice bank</div>
+      <div class="howto-grid">
+        ${tips.map(([h,p]) => `
+          <div class="howto-cell">
+            <div class="howto-cell-h">${h}</div>
+            <div class="howto-cell-p">${p}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EVENTS (delegated)
+   ══════════════════════════════════════════════════════════════ */
+document.addEventListener("click", function(e) {
+  const t = e.target.closest("[data-action]");
+  if (!t) return;
+  const action = t.dataset.action;
+
+  if (action === "select-track") {
+    activeTrack = t.dataset.trackId;
+    activeTopic = 0;
+    saveState();
+    render();
+  } else if (action === "select-topic") {
+    activeTopic = parseInt(t.dataset.topicIdx, 10);
+    saveState();
+    render();
+  } else if (action === "toggle-ex") {
+    const k = key(t.dataset.trackId, t.dataset.topicIdx, t.dataset.tierIdx, t.dataset.exIdx);
+    completed[k] = !completed[k];
+    saveState();
+    render();
+  }
+});
+
+document.getElementById("resetBtn").addEventListener("click", function() {
+  if (confirm("Reset all progress across every track? This can't be undone.")) {
+    completed = {};
+    saveState();
+    render();
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   BOOT
+   ══════════════════════════════════════════════════════════════ */
+loadState();
+render();
+</script>
+</body>
+</html>
