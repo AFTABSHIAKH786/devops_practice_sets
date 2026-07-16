@@ -228,7 +228,7 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <div class="eyebrow">Practice Exercise Bank<span class="dot"></span>464 Exercises<span class="dot"></span>29 Topics</div>
+    <div class="eyebrow">Practice Exercise Bank<span class="dot"></span>1,328 Exercises<span class="dot"></span>83 Topics<span class="dot"></span>12 Tracks</div>
     <h1 class="title">Basic → Expert Drills</h1>
     <div class="subtitle">Python · Go · Kubernetes · Infrastructure as Code — build the base, then move forward</div>
 
@@ -1042,7 +1042,381 @@ const tracks = [
     ]},
   ],
 },
+{
+  id: "linux", emoji: "🐧", title: "Linux", color: "#f97316",
+  subtitle: "Command Line · Bash · System Administration",
+  topics: [
+    { name: "Shell & File System", tiers: [
+      [`Run ls -la / and explain every column`,`Create directory tree projects/linux/stage0/ in one command with mkdir -p`,`Copy /etc/hostname to home and rename it my_hostname.txt`,`Use head, tail, less to read sections of /var/log/syslog`],
+      [`Write a script printing a formatted system report: hostname, OS, kernel, uptime`,`Find all files larger than 10MB in /var using find -size`,`Show hidden files in your home directory and count them with wc -l`,`Use tree -L 2 to display the /usr hierarchy two levels deep`],
+      [`Build a system_info.sh: hostname, CPU count, RAM, disk per mount point`,`Use du -sh piped to sort -rh to find top 10 largest dirs under /var`,`Write a script monitoring a dir for new files and logging name, size, timestamp`,`Explore /proc/meminfo and /proc/cpuinfo and parse them in shell`],
+      [`Implement a basic ls -la equivalent using /proc without calling ls`,`Write a script that watches a directory and emails when a matching file appears`,`Build a file integrity checker: sha256sum all files, save manifest, detect changes`,`Use inotifywait to react to file events and trigger automated actions`],
+    ]},
+    { name: "Users, Groups & Permissions", tiers: [
+      [`Create user devops, set a password, verify home directory was created`,`Add devops to the sudo group and verify with id devops`,`Create a file owned by root, world-readable but not world-writable`,`Show all users in the sudo group using getent group sudo`],
+      [`Create a shared dir accessible to group devteam but not world-accessible`,`Write a script creating users dev01–dev05 with home dirs, add all to devteam`,`Find all SUID files on the system using find / -perm /4000`,`Revoke a specific sudo permission without removing user from sudo group`],
+      [`Configure /etc/sudoers via visudo so devops can only run systemctl restart nginx`,`Write user_audit.sh: lists all users with login shells, last login, sudo access`,`Find world-writable files in /etc and report them`,`Create an ACL allowing a specific user read access to another user's files`],
+      [`Implement PAM-based password complexity requirements`,`Write a script detecting accounts with empty passwords and locking them`,`Audit sudoers across a fleet of servers via SSH and summarize differences`,`Implement file system quota for a user and test enforcement`],
+    ]},
+    { name: "Process Management", tiers: [
+      [`Find top 5 CPU-consuming processes using ps aux --sort=-%cpu | head -6`,`Kill a process by name using pkill nginx`,`Run a long sleep in the background with &, bring to foreground with fg`,`Show all zombie processes using ps aux | awk '$8=="Z"'`],
+      [`Write a script monitoring a process by name and restarting it if it dies`,`Use nice to start a CPU-intensive job at low priority, renice to change it later`,`Show all open files by a process using lsof -p PID`,`Send SIGTERM then SIGKILL with a 10-second grace period in a script`],
+      [`Write a script watching for processes exceeding X% CPU for Y seconds and killing them`,`Use strace -p PID to trace system calls and explain what you see`,`Build process_monitor.sh: checks if a service runs every 30s, logs state changes`,`Profile a shell script execution using time and bash -x tracing`],
+      [`Use perf stat to profile a CPU-intensive script and explain each metric`,`Intercept and log all system calls from a suspicious process using strace -o`,`Write a process resource limiter using ulimit and cgroups`,`Build a signal handler in Bash for graceful shutdown of a long-running daemon`],
+    ]},
+    { name: "Text Processing (grep, awk, sed)", tiers: [
+      [`Count lines in /var/log/syslog containing "error" (case-insensitive) with grep -ic`,`Print only the 3rd column from /etc/passwd using awk -F: '{print $3}'`,`Replace all "localhost" with "127.0.0.1" in a file using sed -i`,`Find all .log files in /var/log larger than 10MB using find -size +10M`],
+      [`Parse nginx access log: print unique IPs and count of requests per IP, sorted by frequency`,`Use awk to calculate total size of all .log files from ls -l output`,`Extract HTTP status codes from nginx log and count occurrences of each`,`Use find + xargs + grep to search all .conf files in /etc for a specific string`],
+      [`Write a one-liner: read nginx log, extract IPs, count, sort, print top 10`,`Write a log analyzer detecting high error rate periods and reporting them`,`Use awk to generate a CSV report from a multi-column log file`,`Write a sed script transforming Apache combined log format to JSON`],
+      [`Build a log analysis tool in Bash: total requests, unique IPs, top 10 URLs, error rate`,`Write a parser detecting anomalous patterns (brute force, scan) from auth logs`,`Process a 1GB log file efficiently without loading it all into memory`,`Generate an HTML report from raw log data using only bash, awk, and sed`],
+    ]},
+    { name: "Bash Scripting", tiers: [
+      [`Write a script accepting $1 as a name and printing a greeting; exit 1 if no arg`,`Check if a file exists, is readable, and non-empty — print appropriate message`,`Loop creating directories dir01 through dir10 using for i in {01..10}`,`Write a function returning the absolute value of a number`],
+      [`Write a script checking if a service is running and starting it if not`,`Use getopts to parse -f file and -n count flags`,`Write a backup script: copies a dir to /tmp/backup_YYYYMMDD/, removes backups > 7 days`,`Read a list of servers from a file and SSH-check if port 22 is open on each`],
+      [`Write deploy.sh: clone repo, run tests, deploy if pass, log everything, rollback on fail`,`Write a CSV processor that generates an HTML table output`,`Add set -euo pipefail and explain what each flag does and why it matters`,`Write a script monitoring log files in real time and sending Slack alerts on ERROR`],
+      [`Implement a mini task runner in Bash reading a Taskfile with dependency resolution`,`Write a production-safe deploy.sh: logging, rollback, health checks, notifications`,`Build a menu-driven admin tool with select for common server operations`,`Write a configuration management script that idempotently applies settings`],
+    ]},
+    { name: "Systemd & Services", tiers: [
+      [`Check status of sshd and nginx, start/stop/restart with systemctl`,`Enable a service to start on boot; disable another; verify with is-enabled`,`Read last 100 lines for a service with journalctl -u nginx -n 100`,`Filter journalctl to show only ERROR-level messages since last boot`],
+      [`Write a custom systemd service unit running your server_health.sh script`,`Create a systemd timer running the health check every 5 minutes`,`Write a service with Restart=on-failure, RestartSec=5, and WantedBy=multi-user.target`,`Debug a systemd service failing to start using journalctl -xe and systemctl status`],
+      [`Write a service starting after network is up, running as non-root, loading env from a file`,`Create a systemd socket activation unit for a simple server`,`Package your health check as a proper systemd service + timer, verify it runs on boot`,`Write a drop-in override for a vendor service without modifying the original unit file`],
+      [`Implement a systemd watchdog using sd_notify in a script`,`Create a complex multi-unit dependency graph with ordering and requirements`,`Migrate a cron job to a systemd timer with proper logging and error handling`,`Build a service managing its own log rotation via systemd configuration`],
+    ]},
+    { name: "Networking on Linux", tiers: [
+      [`Show all network interfaces and IPs with ip addr`,`Show the routing table with ip route and identify the default gateway`,`Test DNS for google.com using dig A google.com and nslookup google.com`,`Show all listening ports with process names using ss -tulpn`],
+      [`Capture 10 HTTP packets on eth0 with tcpdump -i eth0 port 80 -c 10`,`Trace the full network path to 8.8.8.8 and explain each hop`,`Block incoming traffic on port 8080 with iptables and verify with nmap`,`Write a script checking if a list of hosts is reachable and DNS-resolvable`],
+      [`Analyze an HTTP request with tcpdump: identify host, path, status code from raw packets`,`Set up a persistent firewall: allow SSH+HTTP+HTTPS, block everything else, survive reboot`,`Write network_audit.sh: discovers services, tests DNS, outputs JSON health report`,`Diagnose a network issue using only ip, ss, dig, tcpdump and document the process`],
+      [`Write a port scanner using only bash /dev/tcp (no nmap) with timeout handling`,`Capture and analyze a full TLS handshake with tcpdump and Wireshark`,`Implement connection tracking analysis to identify unusual network patterns`,`Build a network baseline script: captures and compares routing and socket states over time`],
+    ]},
+    { name: "Security Hardening", tiers: [
+      [`Disable SSH password auth, enable key-only auth, verify it works`,`Change SSH default port, update firewall rules, verify access`,`Install fail2ban, configure it to block IPs after 3 failed SSH attempts`,`Run lynis audit system and review the hardening score`],
+      [`Implement UFW: deny all inbound, allow SSH(22) and HTTPS(443) only`,`Set up auditd to log all writes to /etc/passwd and /etc/sudoers`,`Find users with empty passwords and disable them`,`Find all SUID binaries and research which are expected vs suspicious`],
+      [`Apply top 20 CIS Level 1 Ubuntu controls using a Bash script`,`Write a daily security audit: SSH config, open ports, SUID files, world-writable, sudoers`,`Set up and verify automatic security updates via unattended-upgrades`,`Build harden.sh: SSH hardening, firewall, fail2ban, disable unused services`],
+      [`Implement file integrity monitoring with AIDE or Tripwire`,`Set up kernel hardening via sysctl: ASLR, restrict ptrace, harden network stack`,`Simulate and detect a privilege escalation attack on a test system`,`Build a comprehensive before/after security audit report generator`],
+    ]},
+    { name: "Performance Analysis", tiers: [
+      [`Identify top 5 CPU-consuming processes with top -b -n 1`,`Show current memory, swap usage, and memory pressure with free -h and vmstat`,`Find the process doing the most disk I/O with iotop -o`,`Show network throughput per interface in real time with iftop`],
+      [`Use fio to benchmark disk read/write speeds and explain the metrics`,`Simulate high memory pressure and observe OOM killer behavior in dmesg`,`Profile a CPU-intensive script with perf stat and explain all counter metrics`,`Capture a performance baseline: CPU, mem, disk, net at 5s intervals for 5 minutes`],
+      [`Use strace to trace a failing service and identify which syscall fails`,`Tune sysctl parameters for a high-connection-count web server workload`,`Use perf record + report to find the hottest code path in a program`,`Build a performance report script: captures key metrics and generates JSON summary`],
+      [`Use eBPF tools (bpftrace or bcc) to trace system-level latency`,`Profile a network-intensive app: measure latency at each layer (app → kernel → wire)`,`Implement automated performance regression detection using baseline comparison`,`Write a capacity planning model: given current metrics, predict when resources exhaust`],
+    ]},
+    { name: "Log Management", tiers: [
+      [`Find all authentication failures in /var/log/auth.log using grep`,`Show kernel messages since last boot with journalctl -k`,`View nginx logs for last hour with journalctl -u nginx --since "1 hour ago"`,`Count total log lines across all .log files in /var/log`],
+      [`Write a logrotate.conf: daily rotation, 7-day retention, compress, post-rotate hook`,`Write a script monitoring /var/log/auth.log for brute-force and blocking IPs`,`Set up rsyslog to forward WARNING+ logs to a remote destination over TCP`,`Write a log shipper script tailing a log file and POSTing each line to a webhook`],
+      [`Parse journald JSON output and create alerts for OOM or segfault events`,`Build a log rotation verification system confirming logs are being rotated properly`,`Write a real-time log analyzer that updates a terminal summary every 5 seconds`,`Implement log correlation: link events across multiple log files by timestamp`],
+      [`Build a log aggregation pipeline: collect from multiple sources, normalize, store`,`Implement log-based anomaly detection using statistical methods`,`Design and implement a log retention policy system with automated enforcement`,`Build a structured log converter: transforms any unstructured log to JSON format`],
+    ]},
+  ],
+},
+{
+  id: "networking", emoji: "🌐", title: "Networking", color: "#06b6d4",
+  subtitle: "OSI Model · TCP/IP · DNS · HTTP · Troubleshooting",
+  topics: [
+    { name: "OSI Model & TCP/IP", tiers: [
+      [`List all 7 OSI layers from memory with one protocol example at each layer`,`Run curl -v https://example.com and identify which OSI layer each output line belongs to`,`Explain what happens at each OSI layer when you send an HTTP request`,`Use traceroute 8.8.8.8 and explain what each hop represents in OSI terms`],
+      [`Capture a DNS query with tcpdump and identify each OSI layer in the packet`,`Compare TCP vs UDP: write a table of differences across OSI layers`,`What happens when you type https://github.com? Write a detailed step-by-step walkthrough`,`Explain the difference between a Frame (L2), Packet (L3), and Segment (L4)`],
+      [`Write a DevOps troubleshooting guide mapping common issues to OSI layers`,`Capture traffic for a complete TLS handshake and label each packet with its OSI layer`,`Explain how NAT works and why it breaks the end-to-end principle at layer 3`,`Analyze a packet capture with Wireshark and produce a per-layer analysis report`],
+      [`Write a cheat sheet mapping the top 20 network error messages to OSI layers and fixes`,`Build a network connectivity test script that diagnoses issues at each layer`,`Design a network architecture and document the protocols operating at each layer`,`Implement a packet analyzer showing OSI layer breakdown for captured traffic`],
+    ]},
+    { name: "IP Addressing & Subnetting", tiers: [
+      [`Given 192.168.10.50/24: calculate network, broadcast, first host, last host, usable hosts`,`Is 172.20.5.1 a private or public IP? Which RFC 1918 range?`,`List the 3 private IP ranges with CIDR notation from memory`,`How many hosts are in a /28 subnet? A /20? A /27?`],
+      [`Divide 10.10.0.0/16 into 4 equal subnets — list all 4 network addresses and host counts`,`Can 192.168.1.100/26 communicate directly with 192.168.1.200? Show working.`,`Design IP addressing for a 3-tier app: web (20 hosts), app (10 hosts), DB (5 hosts)`,`Convert 192.168.1.1 to binary and explain each octet's significance`],
+      [`Write a script taking a CIDR block and printing: network, broadcast, all usable IPs, count`,`Design EKS network: nodes CIDR, pod CIDR, service CIDR — explain why they must not overlap`,`Calculate VLSM allocation for a company with 4 departments of different sizes`,`Explain IPv6 addressing and convert an IPv4 address to IPv6 format`],
+      [`Implement a subnet calculator CLI tool in Python or Bash`,`Design a multi-region AWS IP addressing scheme with no overlaps across 3 regions`,`Write an IP range conflict checker: given a list of CIDRs, detect any overlaps`,`Design the routing architecture for a hub-and-spoke network with VPC peering`],
+    ]},
+    { name: "DNS", tiers: [
+      [`Use dig A github.com — identify the answer, TTL, and authoritative nameserver`,`Look up MX records for gmail.com using dig MX gmail.com`,`Do a reverse DNS lookup for 8.8.8.8`,`Add a custom entry to /etc/hosts and verify it overrides DNS`],
+      [`Use dig +trace github.com and describe each step of the resolution process`,`Write a script querying a hostname from 5 different DNS resolvers and comparing answers`,`Explain what a CNAME is and why you can't use it at the zone apex`,`Set up dnsmasq for local DNS resolution with custom records`],
+      [`Write a DNS health checker reading a list of records and comparing to expected values`,`Explain DNS-based service discovery with SRV records and demonstrate with a query`,`Diagnose and fix a DNS propagation issue during a domain migration`,`Set up bind9 with a custom zone file, forward zone, and reverse zone`],
+      [`Build a DNS monitoring script alerting when TTLs change unexpectedly`,`Implement a DNS-based load balancing test with multiple A records and round-robin`,`Write an automated DNS audit tool for a domain portfolio`,`Analyze a DNS amplification attack and implement mitigation measures`],
+    ]},
+    { name: "TCP, UDP & Ports", tiers: [
+      [`List all listening TCP ports with process names using ss -tulpn`,`Run curl -v http://example.com — identify the TCP handshake in the output`,`Show all established TCP connections and count them`,`Explain in writing: what are the 3 steps of a TCP handshake?`],
+      [`Capture a TCP 3-way handshake with tcpdump -i eth0 port 80 -c 3`,`Explain TIME_WAIT state: when does it occur and why is it a production concern?`,`Write a Bash TCP port checker using /dev/tcp (no netcat, no curl)`,`Show socket statistics with ss -s and explain each counter`],
+      [`Tune /proc/sys/net/ipv4/ parameters to handle high connection counts`,`Analyze a packet capture of a slow HTTP response: TCP delay or application delay?`,`Demonstrate and explain the difference between half-open and fully established connections`,`Build a connection state monitor tracking and graphing TCP state distributions over time`],
+      [`Write a TCP stress tester measuring connection establishment time under load`,`Implement custom TCP keepalive settings and verify they prevent idle connection drops`,`Analyze and optimize a configuration suffering from high TIME_WAIT connections`,`Build a TCP performance baseline tool measuring throughput and latency`],
+    ]},
+    { name: "HTTP & HTTPS", tiers: [
+      [`Use curl -I https://github.com and interpret every response header`,`Make a POST request with JSON body using curl -X POST -H "Content-Type: application/json"`,`Follow an HTTP redirect manually using curl -I on each Location header`,`Show the TLS certificate chain for github.com with openssl s_client -connect`],
+      [`Decode a Base64 Authorization header — what credentials does it contain?`,`Explain the difference between 301 and 302 redirects and when to use each`,`Use curl to test an API with Bearer token authentication`,`Inspect HTTP/2 multiplexing by loading a page with curl --http2 -v`],
+      [`Implement a basic HTTP server using only Bash and nc responding on port 8080`,`Capture a full HTTPS handshake with tcpdump and label each TLS record`,`Build an api_health_checker.sh reading endpoints+expected codes from config and verifying all`,`Analyze an HTTP response for security headers and identify missing ones`],
+      [`Build a curl-based API testing framework with JSON assertion support`,`Implement HTTP response caching analysis: classify each response as cacheable/not and why`,`Write a script detecting SSL certificate expiry for a list of domains and alerting 30 days before`,`Build an HTTP load tester using Bash and analyze the distribution of response times`],
+    ]},
+    { name: "Load Balancers & Proxies", tiers: [
+      [`Configure nginx as a reverse proxy for a backend on port 8080`,`Serve static files with nginx and add proper Cache-Control headers`,`Add HTTPS to nginx using a self-signed certificate`,`Add basic HTTP authentication to an nginx location block`],
+      [`Configure nginx load balancing for 3 backends with round-robin, test with a curl loop`,`Set up nginx to redirect all HTTP to HTTPS permanently`,`Configure nginx rate limiting: max 10 req/sec per IP, return 429 on excess`,`Configure nginx health checks removing unhealthy upstreams from rotation`],
+      [`Set up HAProxy for TCP load balancing with health checks and session persistence`,`Configure nginx with upstream keepalive connections and benchmark the improvement`,`Build a production nginx config: static assets, API proxy, health check, HTTPS only, rate limit`,`Implement active-passive failover with keepalived and nginx`],
+      [`Write nginx custom log format and analyze performance characteristics from logs`,`Implement canary routing in nginx: 10% of traffic to v2, 90% to v1 based on headers`,`Set up a full CDN-like caching layer with nginx including cache purging`,`Build a load balancer health monitoring script with automatic alert on upstream failures`],
+    ]},
+  ],
+},
+{
+  id: "git", emoji: "🌿", title: "Git & GitOps", color: "#ef4444",
+  subtitle: "Version Control · Branching Strategies · GitOps",
+  topics: [
+    { name: "Git Fundamentals", tiers: [
+      [`Initialize a repo, create 3 files, commit with a proper message, view log`,`Create a .gitignore ignoring: *.log, .env, node_modules/, __pycache__/`,`Make 5 commits and view history with git log --oneline --graph`,`Use git diff to see changes before and after staging`],
+      [`Write 5 commit messages following the Conventional Commits spec`,`Use git log --since="1 week ago" --author="YourName" to view weekly activity`,`Create a repo, commit files, add more .gitignore patterns, un-track with git rm --cached`,`Use git show HEAD~2 to inspect an older commit's diff`],
+      [`Set up a Git project with pre-commit hooks running ShellCheck on .sh files`,`Initialize a repo for server_health.sh with proper .gitignore and v1.0.0 tag`,`Write a git log alias showing a pretty formatted oneline graph with dates`,`Explain the difference between git diff HEAD, git diff --staged, and git diff`],
+      [`Write a custom Git hook enforcing commit message format and failing on violations`,`Build a Git statistics script: commits per day, files changed, most active hours`,`Set up commit signing with GPG and verify signed commits on GitHub`,`Write a script auto-generating a CHANGELOG from git log since last tag`],
+    ]},
+    { name: "Branching & Merging", tiers: [
+      [`Create branch feature/add-logging, make 3 commits, merge back to main`,`Create a merge conflict intentionally and resolve it`,`View branch history with git log --all --oneline --graph`,`Delete a merged branch locally and on remote`],
+      [`Rebase a feature branch onto an updated main — compare to merge`,`Use git merge --squash to combine 5 feature commits into one`,`Create a scenario showing fast-forward vs 3-way merge — explain the difference`,`Use git cherry-pick to apply a commit from one branch to another`],
+      [`Do interactive rebase: reorder 3 commits, squash 2, edit one message`,`Use git bisect to find the commit introducing a bug in a 20-commit repo`,`Recover a deleted branch using git reflog`,`Demonstrate git worktree for working on two branches simultaneously`],
+      [`Use git filter-repo to remove a file with secrets from entire history`,`Implement a fully automated semantic versioning workflow using git tags`,`Write a script validating branch names match a team naming convention`,`Resolve a complex 3-way merge conflict in a Terraform file without data loss`],
+    ]},
+    { name: "Remote Repositories", tiers: [
+      [`Fork a public repo, clone, make a change, push, open a Pull Request`,`Add a remote to a local repo and push your first branch`,`Explain the difference between git fetch and git pull`,`Set up SSH key authentication with GitHub`],
+      [`Set up branch protection on main: no direct push, require PR + CI to pass`,`Simulate a team workflow: two users push conflicting changes, resolve via PR`,`Configure upstream tracking branch and use git pull --rebase as default`,`Set up a GitHub Actions workflow that runs on every PR and blocks merge if tests fail`],
+      [`Configure GitHub branch protection: require reviews, CI pass, no force pushes`,`Set up CODEOWNERS file routing PR reviews to the right team`,`Write a script checking all open PRs older than 7 days and Slack-notifying the author`,`Implement conventional commits enforcement via a GitHub Actions bot comment`],
+      [`Automate PR creation when a new feature branch is pushed using GitHub Actions`,`Build a GitOps workflow: code change → PR → CI → merge → auto-deploy`,`Implement a release workflow with automated tagging and GitHub Release notes`,`Set up a repository template with pre-configured branch protections and Actions`],
+    ]},
+    { name: "Git Workflows for Teams", tiers: [
+      [`Draw the Gitflow model: when each branch is created, merged, deleted`,`Implement GitHub Flow: 3 complete feature → PR → merge cycles`,`Explain: why does Trunk-Based Development work at Google but risk at a small team?`,`Create a release branch, add a hotfix, merge to both main and develop`],
+      [`Set up a Gitflow workflow using git flow CLI — demonstrate full release cycle`,`Compare Gitflow vs GitHub Flow vs Trunk-Based for a 5-person DevOps Terraform team`,`Design a branching strategy for a monorepo with 3 microservices and different release cycles`,`Write a team Git workflow guide as a markdown document with diagrams`],
+      [`Implement full GitOps: Terraform changes → Git → Actions plan → Actions apply`,`Write a CI pipeline enforcing: no merge without passing tests AND required reviewers`,`Implement feature flags alongside trunk-based development for safe continuous deployment`,`Set up Atlantis for Terraform PR automation: plan on open, apply on merge`],
+      [`Design and document the Git strategy for a 50-person engineering org`,`Build a Git governance dashboard: PR age, review lag, merge rate, branch count`,`Implement automated dependency update PRs using Renovate or Dependabot`,`Migrate a team from Gitflow to Trunk-Based Development without disruption`],
+    ]},
+    { name: "GitOps", tiers: [
+      [`Explain the pull vs push GitOps model and draw a diagram`,`Install ArgoCD on minikube and connect it to a Git repo`,`Deploy nginx via ArgoCD, modify in Git, watch ArgoCD reconcile`,`Enable ArgoCD auto-sync and verify a Git change triggers automatic deployment`],
+      [`Set up Kustomize overlays (base + dev/staging/prod) with ArgoCD`,`Use SOPS to encrypt a secret in Git and configure ArgoCD to decrypt at apply time`,`Set up Flux instead of ArgoCD and compare the two tools`,`Implement ArgoCD ApplicationSets to manage multiple environments from one template`],
+      [`Build a full CI/CD → GitOps pipeline: GitHub Actions builds image → updates tag → ArgoCD deploys`,`Configure ArgoCD RBAC so teams manage only their own Applications`,`Design a GitOps repo structure for multi-env Kubernetes with Kustomize overlays`,`Implement progressive delivery with Argo Rollouts: canary auto-promotion via Prometheus metrics`],
+      [`Build an Atlantis installation for Terraform GitOps on a real AWS environment`,`Implement drift detection: ArgoCD alerts when cluster state diverges from Git for > 5 minutes`,`Design and document a GitOps migration plan for a team currently using manual kubectl`,`Build a GitOps observability dashboard: sync status, drift events, deploy frequency in Grafana`],
+    ]},
+    { name: "Advanced Git Operations", tiers: [
+      [`Stash current changes, switch branches, come back, pop the stash`,`Cherry-pick a specific commit from hotfix to main`,`Create an annotated tag v1.0.0 with message, push to remote`,`Use git reset --soft HEAD~1 to uncommit but keep changes staged`],
+      [`Use git revert to undo a commit in the middle of history without touching others`,`Use git reflog to recover a commit after a bad reset`,`Use git stash list and apply a specific stash entry by index`,`Use git config to set up useful aliases: git st, git lg, git unstage`],
+      [`Interactive rebase: squash 3 commits into 1, fix typo in a past commit message`,`Use git bisect run to automate bug hunting`,`Set up a pre-push hook validating no TODO comments in committed code`,`Use git notes to annotate commits with additional context`],
+      [`Remove secrets from git history with git filter-repo and force-push safely`,`Implement a signed-tag release workflow with GPG verification`,`Build a git audit tool: who changed what files in the last 30 days`,`Write a git migration script moving selected history from one repo to another`],
+    ]},
+  ],
+},
+{
+  id: "docker", emoji: "🐳", title: "Docker", color: "#3b82f6",
+  subtitle: "Containers · Images · Compose · Production Patterns",
+  topics: [
+    { name: "Container Basics", tiers: [
+      [`Run docker run hello-world and explain the output`,`Run nginx with port mapping: docker run -d -p 8080:80 --name my-nginx nginx`,`List running containers, exec into one, view logs with docker logs -f`,`Run a container with --rm flag and explain what it does`],
+      [`Run PostgreSQL with name, password, port mapping — connect with psql`,`Run Redis, write a key, stop container, start new one — is the data still there?`,`Run nginx and serve a custom index.html using a bind mount`,`Run a container with memory limit 256MB and CPU limit 0.5 — verify with docker stats`],
+      [`Explore nginx image layers with docker history and docker image inspect`,`Run 3 containers sharing a volume — explain the risks of concurrent writes`,`Use docker diff to see what changed inside a container and why docker commit is bad practice`,`Explain what happens to data when container is stopped vs removed — demo with Redis`],
+      [`Build a custom bridge network, run 3 containers on it, verify inter-container DNS`,`Write a script managing a pool of ephemeral Docker containers for parallel task processing`,`Implement a rolling restart of N containers with health checks between each`,`Build a monitoring script tracking container resource usage over time`],
+    ]},
+    { name: "Dockerfile & Images", tiers: [
+      [`Write a Dockerfile for a Hello World Python Flask app, EXPOSE 5000, CMD to start it`,`Add .dockerignore excluding __pycache__, .env, *.log from build context`,`Build with docker build -t myapp:v1 . and verify it runs`,`Explain the difference between CMD and ENTRYPOINT with an example`],
+      [`Optimize a Dockerfile by reordering layers so pip install is cached on source code changes`,`Rewrite a root-running Dockerfile to run as non-root user appuser with UID 1000`,`Use ARG VERSION to build myapp:v1.0 and myapp:v2.0 from the same file`,`Use docker scan or trivy image to find vulnerabilities in 3 different base images`],
+      [`Build a Go app with multi-stage build: compile in golang:1.22, final in scratch — target < 10MB`,`Compare python:3.12, python:3.12-slim, python:3.12-alpine — sizes and trade-offs`,`Use Hadolint to lint a Dockerfile and fix every warning`,`Write a Dockerfile using BuildKit secrets to pass npm token without baking into image`],
+      [`Build the same app with Buildpacks (no Dockerfile) and compare to your Dockerfile approach`,`Implement a fully reproducible build: pinned base image digest, lockfile-based deps, hash verification`,`Write a Dockerfile for a multi-architecture image (amd64 + arm64) using buildx`,`Scan, sign, and push a Docker image with cosign — verify the signature before running`],
+    ]},
+    { name: "Docker Networking", tiers: [
+      [`Create a user-defined bridge network, run two containers, verify they ping by name`,`Run a container with --network host and explain the security implications`,`Inspect a container's network config: IP, MAC, gateway with docker inspect`,`List all Docker networks and explain the purpose of: bridge, host, none`],
+      [`Set up 3 containers (nginx → api → redis) on a custom network, expose only nginx:80`,`Explain: why can't containers on the default bridge communicate by name?`,`Connect a running container to a second network without restarting it`,`Use docker network disconnect to isolate a container and verify it lost connectivity`],
+      [`Configure network isolation: two container groups that cannot talk but both reach internet`,`Set up a docker-compose network with --internal flag for DB isolation`,`Debug a container networking issue: container can't reach external host — systematic approach`,`Implement container-to-container mTLS using self-signed certificates`],
+      [`Build a multi-host Docker overlay network using Docker Swarm and test cross-host communication`,`Implement network namespacing to share a network between containers selectively`,`Write a network policy enforcement script for Docker`,`Analyze and optimize Docker networking performance with iperf between containers`],
+    ]},
+    { name: "Docker Volumes & Storage", tiers: [
+      [`Create a named volume, mount in container, write data, remove container, verify data persists`,`Bind-mount local source code into a container for live-reload development`,`Inspect a volume and find its location on the host filesystem`,`Show the difference between bind mount (-v /host:/container) and named volume (-v myvolume:/container)`],
+      [`Run PostgreSQL with a named volume, insert data, remove container, recreate, verify data survived`,`Write a backup script using docker run --volumes-from to tar a container's volume`,`Use a tmpfs mount for temporary sensitive data that doesn't persist to disk`,`Demonstrate volume sharing between two containers and handle a write conflict`],
+      [`Set up PostgreSQL with automated daily backup: pg_dump to timestamped dir, remove after 7 days`,`Implement volume encryption using dm-crypt on the host before mounting to container`,`Write a volume migration script moving data between Docker volumes safely`,`Implement a point-in-time recovery workflow for a Postgres container volume`],
+      [`Build a distributed volume system using NFS for multi-host Docker containers`,`Write a disaster recovery drill: destroy volume, restore from backup, verify data integrity`,`Implement volume usage monitoring with alerts when a volume exceeds 80% capacity`,`Build a storage cost analyzer: maps volume sizes and usage to estimated cloud costs`],
+    ]},
+    { name: "Docker Compose", tiers: [
+      [`Write a docker-compose.yml running nginx + PostgreSQL with a named volume for DB`,`Add a health check to PostgreSQL so dependent services only start when DB is ready`,`Use a .env file to externalize database password from the Compose file`,`Run docker compose up -d, verify, scale a service, and run docker compose down`],
+      [`Write a 3-tier Compose: frontend, backend, DB with correct network isolation`,`Use docker-compose.override.yml for dev-specific settings without changing base`,`Configure resource limits for all services in a Compose file`,`Write a Makefile with make up, make down, make logs, make backup targets`],
+      [`Set up a full local dev environment: app with live reload, Postgres, Redis, pgAdmin — one command`,`Scale an API service to 3 replicas behind nginx load balancer in Compose`,`Implement strict health checks with depends_on: condition: service_healthy for every service`,`Write a Compose file for a monitoring stack: app + Prometheus + Grafana + Loki`],
+      [`Build a self-contained CI environment using Compose: test runner + services + teardown`,`Implement blue-green deployment using Docker Compose and a reverse proxy`,`Write a Compose-based chaos tool that randomly kills containers to test resilience`,`Build a complete production-like local environment with Compose for a 5-service app`],
+    ]},
+    { name: "Docker Security & Production", tiers: [
+      [`Scan 5 images with Trivy — rank by critical CVEs: nginx:latest, nginx:alpine, ubuntu, alpine, python:alpine`,`Run a container with --user 1000:1000 and --read-only filesystem`,`Generate an SBOM for an image using syft`,`Run a container with resource limits and restart policy unless-stopped`],
+      [`Drop all Linux capabilities from a container and add back only what's needed`,`Compare nginx:latest vs nginx:alpine vs nginx-unprivileged for vulnerabilities`,`Tag an image with semantic version and git SHA, push both to Docker Hub`,`Set up Docker Content Trust (DCT) and verify Docker refuses to run unsigned images`],
+      [`Write a seccomp profile for nginx allowing only required syscalls`,`Build a CI pipeline step: Trivy scan → fail on CRITICAL → SBOM upload → cosign sign`,`Implement log rotation for container logs: max 10MB, 3 files`,`Write a rolling update script: pull new image, stop/start containers one by one, rollback on failure`],
+      [`Build a comprehensive Docker security audit tool: scans images, configs, runtime settings`,`Implement runtime security monitoring using Falco for Docker containers`,`Design a container supply chain: from source commit to signed, scanned, verified production image`,`Build a Docker cost optimizer: identifies and cleans dangling images, stopped containers, unused volumes`],
+    ]},
+  ],
+},
+{
+  id: "cloud", emoji: "☁️", title: "Cloud (AWS)", color: "#f59e0b",
+  subtitle: "IAM · EC2 · S3 · VPC · EKS · CloudWatch",
+  topics: [
+    { name: "IAM & Access Control", tiers: [
+      [`Create an IAM user with programmatic access, attach ReadOnlyAccess, configure AWS CLI`,`Create group DevOps, add EC2+S3+CloudWatch policies, add a user to the group`,`Write a custom IAM policy in JSON allowing only s3:GetObject on a specific bucket`,`Enable MFA on your root account and IAM user`],
+      [`Create an IAM Role for EC2 to access S3 — attach to instance, verify no access keys needed`,`Write a policy restricting an IAM user to EC2 actions only in ap-south-1`,`Use IAM Policy Simulator to verify a policy allows/denies specific actions`,`Set up AWS CLI named profiles for multiple accounts`],
+      [`Set up AWS Organizations with master + dev + prod accounts and SCPs preventing out-of-region actions`,`Implement ABAC: policy allows access only to resources tagged with the user's team name`,`Design IAM for a DevOps team: Developer, DevOps, and Read-Only (auditor) roles`,`Audit all IAM users for: access key age, MFA status, unused permissions, last activity`],
+      [`Implement just-in-time access using AWS SSO and permission sets`,`Write a Lambda automatically disabling IAM access keys not used in 90 days`,`Build an IAM compliance report generator checking against CIS AWS benchmarks`,`Implement cross-account role assumption with MFA enforcement and audit logging`],
+    ]},
+    { name: "EC2 & Auto Scaling", tiers: [
+      [`Launch a t3.micro EC2, connect via SSH, install nginx, make it publicly accessible`,`Create a Security Group: HTTP/HTTPS from anywhere, SSH from your IP only`,`Create an EBS volume, attach, format, mount, write data, detach, attach to another instance`,`Create a custom AMI from a running instance and launch from it`],
+      [`Create an Auto Scaling Group with Launch Template, min=1, max=5, target CPU=50%`,`Create an ALB, add ASG as target group, verify traffic distribution`,`Use EC2 User Data to auto-install nginx and deploy HTML on every new instance`,`Enable EC2 Instance Connect and access without SSH keys`],
+      [`Implement blue-green deployment: two ASGs behind ALB — shift traffic from v1 to v2 and back`,`Build a Packer golden AMI pipeline: install app, test, tag with git SHA, push — triggered by Actions`,`Write an EC2 instance right-sizing script: flags instances below 20% CPU for 2 weeks`,`Implement EC2 Spot Instance handling with interruption notice detection and graceful shutdown`],
+      [`Design a multi-region active-active setup with Route53 health checks and failover`,`Build a self-healing infrastructure: Lambda detects unhealthy EC2 and triggers ASG refresh`,`Implement immutable infrastructure: every deploy creates new AMI, replaces old instances`,`Write a capacity planning model predicting EC2 costs and scaling needs for 3x traffic growth`],
+    ]},
+    { name: "S3 & Storage", tiers: [
+      [`Create an S3 bucket, upload a file, make it public, access via URL`,`Enable versioning, overwrite a file, retrieve the previous version`,`Set a lifecycle policy: move to Glacier after 30 days, delete after 365 days`,`Upload/download files using AWS CLI with progress`],
+      [`Create a bucket policy: public read for /public/*, IAM auth for everything else`,`Set up S3 event notifications triggering a Lambda or SQS on new file upload`,`Write a Python boto3 script uploading all files in a directory to S3 with a progress bar`,`Enable server-side encryption with KMS and verify in object properties`],
+      [`Build a static website on S3 with CloudFront + Route53 + ACM HTTPS`,`Implement cross-region replication for a backup bucket and estimate RTO/RPO`,`Write an automated S3 backup solution: DB dump → S3 with encryption, versioning, lifecycle policy`,`Implement S3 object expiry and cleanup automation with Lambda`],
+      [`Build an S3 cost optimizer: identifies large objects, suggests compression/tiering strategies`,`Implement S3 inventory analysis: find duplicate objects, unused buckets, public objects`,`Design a multi-region data replication strategy with consistency guarantees`,`Build a storage compliance checker: enforces encryption, versioning, logging on all buckets`],
+    ]},
+    { name: "VPC & Networking", tiers: [
+      [`Create a VPC with CIDR 10.0.0.0/16, 2 public and 2 private subnets across 2 AZs`,`Create Internet Gateway, attach to VPC, create route tables`,`Place web server in public subnet, DB in private — verify only web server is internet-accessible`,`Create a Security Group allowing HTTP/HTTPS from anywhere and SSH from your IP only`],
+      [`Set up NAT Gateway so private instances can reach internet but not be reached from outside`,`Create a VPC endpoint for S3 so private instances access S3 without NAT`,`Configure VPC Flow Logs and query them in CloudWatch Insights for a specific IP`,`Set up VPC Peering between two VPCs and verify cross-VPC connectivity`],
+      [`Design 3-tier VPC: public (ALB), private-app (EKS), private-db (RDS) with all routing and NACLs`,`Write a Terraform module creating standard VPC: 3 public + 3 private subnets, IGW, NAT, route tables`,`Implement NACLs for defense-in-depth beyond Security Groups`,`Set up Transit Gateway connecting 3 VPCs and verify full routing`],
+      [`Design a hub-and-spoke network architecture with Transit Gateway for a multi-account org`,`Build a VPC network monitoring system using Flow Logs + Athena + Grafana`,`Implement PrivateLink to share a service between VPCs without VPC peering`,`Write an automated VPC compliance checker: validates CIDR, subnet sizing, flow logs, NACLs`],
+    ]},
+    { name: "RDS & Databases", tiers: [
+      [`Create a t3.micro RDS PostgreSQL in a private subnet, connect via bastion or Session Manager`,`Take a manual RDS snapshot and restore it to a new instance`,`Create a read replica and verify reads can be directed to it`,`Enable automated backups and set a 7-day retention window`],
+      [`Enable Multi-AZ, simulate a failover, and measure the downtime`,`Set up ElastiCache Redis cluster, connect from EC2, write and read keys`,`Configure RDS enhanced monitoring and create a CloudWatch alarm for connections`,`Set up RDS Performance Insights and identify a slow query`],
+      [`Set up cross-region RDS read replica as DR strategy — document promotion procedure`,`Write a Lambda verifying RDS backup completion daily and alerting on failure`,`Implement automated DB password rotation using Secrets Manager with zero downtime`,`Build an RDS right-sizing script: identifies over-provisioned instances and cost savings`],
+      [`Design a DB migration strategy for moving from RDS MySQL to Aurora Postgres with < 1hr downtime`,`Implement DynamoDB with GSI for access pattern optimization`,`Build a database failover runbook and test it with a real RDS Multi-AZ instance`,`Design a multi-region active-active database architecture and document trade-offs`],
+    ]},
+    { name: "EKS & Container Services", tiers: [
+      [`Create an EKS cluster with eksctl create cluster --nodes=2`,`Configure kubectl to connect to your EKS cluster`,`Deploy a sample app and expose via LoadBalancer Service`,`List all EC2 nodes in the cluster with kubectl get nodes`],
+      [`Set up IRSA: ServiceAccount linked to IAM Role so a pod accesses S3 without access keys`,`Install AWS Load Balancer Controller and create ALB via Ingress resource`,`Configure Cluster Autoscaler and demonstrate scale-out under load`,`Enable EKS Managed Add-Ons: CoreDNS, kube-proxy, VPC CNI, EBS CSI driver`],
+      [`Provision production-ready EKS with Terraform: managed node groups, private subnets, IRSA, ALB controller`,`Set up Karpenter for autoscaling with different node pools for different workload classes`,`Implement EKS Fargate profiles for serverless pod scheduling`,`Configure EKS with OIDC provider and integrate with Vault for secret injection`],
+      [`Design a multi-tenant EKS platform: separate node groups, RBAC, NetworkPolicy, ResourceQuota per team`,`Build an EKS cost dashboard: cost per namespace, cost per workload type, recommendations`,`Implement EKS node upgrades with zero downtime using managed node group update strategies`,`Write a production EKS audit tool: checks security settings, RBAC, network policies, resource limits`],
+    ]},
+    { name: "CloudWatch & Monitoring", tiers: [
+      [`Create a CloudWatch alarm for EC2 CPU > 80% for 5 min — send email via SNS`,`Query CloudWatch Logs Insights for top 10 error messages in last 24 hours`,`Create a CloudWatch dashboard: EC2 CPU, memory, ALB request count, DB connections`,`Set up CloudWatch Log Groups with 30-day retention policy`],
+      [`Install CloudWatch Agent on EC2 for memory and disk metrics (not default)`,`Create a composite alarm triggering only when BOTH CPU AND memory are high`,`Set up CloudWatch Container Insights for EKS and query pod metrics`,`Build a CloudWatch metric filter counting application errors from logs`],
+      [`Build a full AWS observability setup: alarms for all critical metrics, dashboard, SNS, Log Insights queries`,`Implement anomaly detection alarms using ML-based baselines instead of fixed thresholds`,`Write a Lambda aggregating CloudWatch alarm states and reporting overall platform health`,`Set up cross-account CloudWatch metrics collection for a multi-account org`],
+      [`Build a CloudWatch-based SLO tracker: queries logs, calculates error rate, reports budget burn`,`Implement a cost anomaly detection pipeline using CloudWatch + EventBridge + Lambda`,`Design and implement complete runbook automation using Alarms → EventBridge → Lambda`,`Build a multi-account cost and observability dashboard using CloudWatch cross-account metrics`],
+    ]},
+    { name: "Serverless & Lambda", tiers: [
+      [`Write a Lambda in Python that prints the triggering event to CloudWatch Logs`,`Create a Lambda triggered by an S3 upload event — log the file name`,`Create a Lambda + API Gateway to expose a Hello World REST endpoint`,`Schedule a Lambda with EventBridge to stop EC2 instances every evening at 8pm`],
+      [`Build a serverless backup notification: RDS backup completes → EventBridge → Lambda → Slack`,`Implement a Lambda with DLQ for failed invocations and process the DLQ manually`,`Write a Lambda that auto-tags untagged EC2 resources with Owner and CostCenter`,`Implement Lambda layers for shared dependencies and measure cold start improvement`],
+      [`Build a serverless API with API Gateway + Lambda + DynamoDB with proper IAM and auth`,`Implement Lambda provisioned concurrency to eliminate cold starts for a latency-sensitive function`,`Write a Lambda that reconciles Route53 DNS records with running EC2 instances`,`Build a cost-optimization Lambda: identifies and reports idle resources daily`],
+      [`Design a serverless event-driven architecture for a data processing pipeline using SQS + Lambda`,`Implement Lambda function URL with response streaming for large payloads`,`Build a serverless compliance checker using Lambda + Config + SNS`,`Write a canary deployment system for Lambda functions using weighted aliases`],
+    ]},
+  ],
+},
+{
+  id: "observability", emoji: "📊", title: "Observability", color: "#8b5cf6",
+  subtitle: "Prometheus · Grafana · Loki · Tracing · SLOs",
+  topics: [
+    { name: "Metrics & Prometheus", tiers: [
+      [`Run Prometheus locally with Docker, expose node_exporter, verify metrics at localhost:9090/targets`,`Write a PromQL query showing total HTTP request count for the last hour`,`Write a PromQL query showing current memory usage percentage of a node`,`Explain the 4 Prometheus metric types: Counter, Gauge, Histogram, Summary`],
+      [`Write PromQL for the four golden signals of an nginx service (rate, errors, latency, saturation)`,`Configure Alertmanager: route Slack for warnings, email for critical, silence during business hours`,`Write a recording rule pre-computing job:http_request_rate5m:mean`,`Use histogram_quantile(0.95, ...) to calculate 95th percentile request latency`],
+      [`Write a custom Prometheus exporter in Python exposing metrics from a MySQL database`,`Implement multi-window burn rate SLO alerts: >14x for 1h OR >6x for 6h`,`Deploy full Prometheus stack on Kubernetes with Prometheus Operator and ServiceMonitors`,`Configure Prometheus remote write to long-term storage (Thanos or VictoriaMetrics)`],
+      [`Write a Prometheus exporter for a custom application using the Go client library`,`Implement a cardinality management strategy to prevent label explosion`,`Build a PromQL query library for the top 20 operational questions at your org`,`Design a federation architecture for a multi-cluster Prometheus deployment`],
+    ]},
+    { name: "Grafana Dashboards", tiers: [
+      [`Connect Grafana to Prometheus, create a time series panel showing node CPU usage`,`Create a variable for instance filtering all panels dynamically`,`Import the Node Exporter community dashboard (ID: 1860) from Grafana.com`,`Set thresholds on a panel: green < 70%, yellow 70-90%, red > 90%`],
+      [`Build a complete Node Exporter dashboard from scratch: CPU, memory, disk, network panels`,`Create an SLO dashboard: current error rate, 30-day budget remaining, burn rate status`,`Add annotations to a dashboard marking deployments from CI/CD`,`Create a Grafana alert firing when a panel value exceeds a threshold and notifying Slack`],
+      [`Provision a Grafana dashboard via JSON ConfigMap in Kubernetes (appears on startup)`,`Write a Terraform config creating Grafana data sources, folders, and dashboards via Grafana provider`,`Build a multi-service dashboard with drilldown links from overview to per-instance details`,`Implement dashboard-as-code with Grafonnet (Jsonnet) for reproducible dashboards`],
+      [`Build a cost optimization dashboard combining AWS Cost Explorer and application metrics`,`Design a Platform Engineering KPI dashboard: DORA metrics, SLO compliance, deployment frequency`,`Implement adaptive alerting: dashboards automatically updating thresholds based on historical data`,`Build a user-facing public status page powered by Grafana with SLO indicators`],
+    ]},
+    { name: "Log Management (Loki & ELK)", tiers: [
+      [`Run Loki + Promtail + Grafana with Docker Compose, ship nginx logs to Loki`,`Write a LogQL query: all ERROR logs from nginx in the last hour`,`Write a LogQL query counting log lines by level over time`,`Explain: why does Loki use labels differently than Elasticsearch?`],
+      [`Set up log-based alerting in Grafana: alert when ERROR rate exceeds 10/min`,`Set up Fluentd on Kubernetes to ship pod logs to Elasticsearch, visualize in Kibana`,`Parse unstructured nginx logs with a Promtail pipeline: extract IP, status, latency as fields`,`Write a Kibana dashboard analyzing HTTP error distribution over time`],
+      [`Set up log correlation: link a Grafana trace to specific log lines in Loki`,`Implement structured logging in an app (JSON logs) and write efficient LogQL queries`,`Configure Loki retention policy with different retention per log stream`,`Set up Elasticsearch ILM (Index Lifecycle Management) for log retention and rollover`],
+      [`Build a log anomaly detection pipeline using Loki + ML or statistical rules`,`Design a cost-effective logging architecture: what to log, retention tiers, query patterns`,`Implement a log compliance system ensuring PII is never logged`,`Build a cross-service log correlation tool linking logs from multiple services during an incident`],
+    ]},
+    { name: "Distributed Tracing", tiers: [
+      [`Instrument a Python Flask app with OpenTelemetry to emit spans per HTTP request`,`Run Jaeger locally with Docker and visualize Flask app traces`,`Identify the slowest span in a sample trace and explain what it means`,`Explain: what is a trace? What is a span? What is a parent-child span relationship?`],
+      [`Add custom spans to your app: DB query and external API call as child spans`,`Connect Grafana to Jaeger/Tempo: create a panel showing trace error rates`,`Implement sampling: only trace 10% of requests to reduce overhead`,`Correlate a trace with its logs and metrics in Grafana using exemplars`],
+      [`Instrument a Go microservice with OpenTelemetry and propagate context through HTTP headers`,`Set up Grafana Tempo as a tracing backend and integrate with Loki for log correlation`,`Write a trace-based alert: fire when P99 latency exceeds 2s based on trace data`,`Implement distributed tracing across 3 microservices with context propagation`],
+      [`Build a trace analysis tool: reads OTLP traces and generates a flame graph report`,`Implement tail-based sampling: capture 100% of error traces, sample 5% of success traces`,`Design a tracing strategy for a 50-service microservices platform`,`Build a service dependency map from trace data showing call graphs`],
+    ]},
+    { name: "SLOs & Error Budgets", tiers: [
+      [`Define SLI, SLO, error budget for: a web API, batch job, and message queue consumer`,`Calculate: with 99.9% monthly SLO, how many minutes of downtime are allowed?`,`Explain the difference between SLA and SLO with a concrete example`,`Identify the Four Golden Signals for your app and which metric represents each`],
+      [`Write a full SLO document: SLI definition, SLO target, measurement window, consequences`,`Calculate error budget burn rate: used 80% of budget in 10 days — when is it exhausted?`,`Implement a Prometheus recording rule calculating rolling success rate for an SLO`,`Build an SLO dashboard: current rate, 30-day budget, burn rate over multiple windows`],
+      [`Implement multi-window burn rate alerts: >14x for 1h AND >6x for 6h (Google SRE Workbook method)`,`Write a quarterly SLO review: was the SLO met? What does it drive next quarter?`,`Design SLOs for a new service: involve stakeholders, choose right targets, define measurement`,`Implement SLO reporting in Grafana with automatic budget reset at calendar month boundaries`],
+      [`Build an automated SLO tracking system: reads metrics, calculates budget, sends weekly digest`,`Design and implement SLOs for a Platform team's internal services`,`Implement SLO-based alerting that is more reliable and less noisy than threshold alerts`,`Write a tool generating SLO documentation from Prometheus rules automatically`],
+    ]},
+    { name: "Alerting & On-Call", tiers: [
+      [`Create an alert firing when CPU > 80% for 5 min — route to Slack via Alertmanager`,`Write a runbook for "High CPU Alert": first 5 investigation steps`,`Write a blameless post-mortem using the 5-why template for a real or simulated incident`,`Explain: what is alert fatigue and what causes it?`],
+      [`Design the alerting strategy for a Kubernetes platform: critical vs warning, what has a runbook`,`Configure Alertmanager inhibition: suppress disk-space alerts when host is unreachable`,`Write a runbook for Database connection pool exhausted: symptoms, investigation, mitigation`,`Set up PagerDuty or Opsgenie with escalation policies and on-call schedule`],
+      [`Implement symptom-based alerting: replace nginx process down with error rate > 1% for 5 min`,`Build a runbook-as-code system: alerts link to markdown runbooks auto-deployed from Git`,`Set up alert routing by team: infrastructure alerts → SRE, app alerts → dev team`,`Implement multi-window SLO alerting and compare its reliability to static threshold alerts`],
+      [`Conduct an alert quality audit: classify all alerts as actionable/noise, fix the noise`,`Build an on-call metrics dashboard: MTTR, alert volume, alerts per engineer per week`,`Implement an automated runbook executor: alert fires → Lambda runs diagnostic steps → posts to Slack`,`Design a Game Day exercise to test on-call procedures and measure response quality`],
+    ]},
+  ],
+},
+{
+  id: "cicd", emoji: "🔄", title: "CI/CD", color: "#22c55e",
+  subtitle: "GitHub Actions · Jenkins · ArgoCD · Deployment Strategies",
+  topics: [
+    { name: "CI/CD Fundamentals", tiers: [
+      [`Draw a complete CI/CD pipeline: commit to production — include every stage and gate`,`Explain the difference between Continuous Delivery and Continuous Deployment`,`Calculate DORA metrics for a team: 10 deployments/week, 2h lead time, 30min MTTR, 5% failure rate`,`Explain: rolling deployment vs blue-green deployment — when would you use each?`],
+      [`Design a pipeline for a Python web app: lint → test → build Docker → push → deploy`,`Explain what artifact management is and why you should never rebuild for production deploys`,`Compare: recreate vs rolling vs blue-green vs canary — trade-offs for each`,`Explain trunk-based development and why it's safer than long-lived feature branches`],
+      [`Design a pipeline with manual approval gate before production deployment`,`Implement a pipeline that measures and enforces test coverage threshold (>80%)`,`Design a database migration strategy in CI/CD: forward-only, backward-compatible changes`,`Write a pipeline design document for a 10-service microservices architecture`],
+      [`Build a DORA metrics tracking system using pipeline events`,`Design a pipeline architecture for a regulated environment requiring audit trails`,`Implement a self-healing pipeline: on failure, automatically opens a GitHub issue with logs`,`Build a pipeline cost analyzer: tracks and optimizes CI build minutes and costs`],
+    ]},
+    { name: "GitHub Actions", tiers: [
+      [`Create a workflow printing "Hello from CI" on every push`,`Add a workflow installing Python dependencies and running pytest on every PR`,`Add a workflow_dispatch trigger for manual runs from the GitHub UI`,`Create a scheduled workflow running at midnight UTC every day`],
+      [`Create a matrix build testing on Python 3.10, 3.11, 3.12 simultaneously`,`Add artifact upload: save coverage report as a downloadable artifact`,`Add pip caching to reduce build time from 60s to < 10s — verify with timestamps`,`Add a Slack notification step sending success/failure messages`],
+      [`Build a full pipeline: lint → test → Docker build → push to registry → update K8s manifest → create PR`,`Set up branch protection + required status checks: no merge without passing CI`,`Write a security scan stage with Trivy: fail on CRITICAL, post results as PR comment`,`Use GitHub Actions environments with protection rules and required reviewer approval`],
+      [`Build a reusable workflow (workflow_call) for Docker build+push used across 3 repos`,`Implement OIDC authentication to AWS — no long-lived AWS credentials stored in secrets`,`Write a custom GitHub Action (composite or Docker) wrapping a complex multi-step process`,`Build a pipeline observability system tracking build duration trends in Grafana`],
+    ]},
+    { name: "Jenkins", tiers: [
+      [`Install Jenkins locally with Docker, create your first Freestyle job, run it`,`Convert a Freestyle job to a Declarative Pipeline using a Jenkinsfile in your repo`,`Add a post-build Slack notification for success and failure`,`Trigger a Jenkins job from a GitHub push event using a webhook`],
+      [`Set up a Jenkins agent running in a Docker container on demand for each build`,`Create a Jenkins Shared Library with a buildAndPush(image, tag) function`,`Configure Jenkins credentials store and reference secrets in Jenkinsfile without hardcoding`,`Set up a Jenkins Blue Ocean multi-branch pipeline and visualize the results`],
+      [`Set up Jenkins on Kubernetes using the official Helm chart with dynamic pod agents`,`Implement a multi-branch pipeline: deploy to dev on feature branches, prod on main with approval`,`Configure Jenkins with a dedicated RBAC model: dev read-only, DevOps full access`,`Write a Jenkins pipeline running Terraform plan on PR and apply on merge to main`],
+      [`Build a Jenkins Shared Library of reusable stages used across 5+ pipelines`,`Implement automated Jenkins job configuration backup to Git`,`Migrate a Jenkins declarative pipeline to GitHub Actions and compare complexity`,`Build a Jenkins pipeline observability dashboard tracking build health over time`],
+    ]},
+    { name: "Deployment Strategies", tiers: [
+      [`Implement a rolling update in Kubernetes: maxSurge=1, maxUnavailable=0, watch pods roll`,`Implement blue-green: create v2 Deployment, verify healthy, switch Service selector to v2`,`Run a canary: v2 gets 10% of traffic (1 replica out of 10) and verify in logs`,`Implement a feature flag to control a new feature in production without deploying`],
+      [`Set up Argo Rollouts canary: start 10%, manual promote to 50%, then 100%`,`Implement automated canary with Argo Rollouts: Prometheus metrics auto-promote or auto-rollback`,`Deploy a canary release using nginx-ingress weight annotations`,`Implement a database migration strategy compatible with both v1 and v2 of the app`],
+      [`Write a zero-downtime deploy script for a stateful service (connection draining, warm-up)`,`Implement a shadow deployment: duplicate traffic to v2 without users seeing v2 responses`,`Build an automated rollback trigger: monitor error rate post-deploy, rollback if > threshold`,`Design a progressive delivery platform supporting multiple strategies via a single CRD`],
+      [`Build a full progressive delivery system using Flagger with automated SLO-based promotion`,`Implement a deployment pipeline with automated performance regression testing`,`Design the deployment strategy for a stateful microservice with a DB schema migration`,`Write a chaos-testing stage in the pipeline injecting failures and validating resilience`],
+    ]},
+    { name: "Secrets in CI/CD", tiers: [
+      [`Add a secret to GitHub Actions and use it in a workflow without printing it`,`Set up gitleaks in a GitHub Actions workflow scanning every PR for accidentally committed secrets`,`Explain why environment variables are not truly secure for secrets in containers`,`Set up pre-commit hooks running gitleaks before every git commit`],
+      [`Configure GitHub Actions to authenticate to AWS using OIDC (no long-lived access keys)`,`Pull a secret from AWS Secrets Manager in GitHub Actions using OIDC credentials`,`Set up GitHub Actions environment secrets (staging vs prod) with protection rules`,`Configure Vault GitHub auth so pipelines fetch secrets without a long-lived token`],
+      [`Set up HashiCorp Vault with GitHub auth method for secret access from pipelines`,`Implement a secret rotation pipeline: rotate DB password → update Vault → trigger rolling restart`,`Write a secret scanning rule for organization-wide detection in GitHub Advanced Security`,`Build a secrets inventory: audit all secrets across CI/CD pipelines and identify unused ones`],
+      [`Design a zero-trust secret management architecture for CI/CD across multiple environments`,`Implement dynamic credentials: Vault generates a short-lived DB password per pipeline run`,`Build a secret hygiene enforcement system: automatic revocation of leaked credentials`,`Write a comprehensive secrets governance policy for a DevOps organization`],
+    ]},
+    { name: "Pipeline Quality & Testing", tiers: [
+      [`Install act and run your GitHub Actions workflow locally before pushing`,`Run actionlint on all workflow files and fix every warning`,`Add a smoke test step: curl health endpoint after deploy, fail if non-200`,`Add a linting step running shellcheck on all bash scripts in the repo`],
+      [`Track pipeline build duration over time using GitHub Actions API + Prometheus pushgateway`,`Write integration tests in a pipeline: real DB, real cache, test actual behavior`,`Add dependency scanning: Snyk or OWASP Dependency Check → fail on high severity`,`Implement pipeline retries: retry flaky tests up to 3 times before failing`],
+      [`Build a pipeline reliability dashboard: failure rate, MTTR, duration trends in Grafana`,`Implement contract testing between services in CI using Pact`,`Write performance tests running in CI and failing if response time regressions are detected`,`Set up a test quarantine system for flaky tests: report them, auto-skip after 3 flakes`],
+      [`Design a full test strategy: unit, integration, contract, E2E, performance — with pipeline stages`,`Build a pipeline cost optimizer: caches aggressively, parallelizes, removes redundancy`,`Implement pipeline-as-code governance: enforce standards across all pipelines via policy`,`Write a pipeline health scorecard: evaluates 10 pipeline quality criteria automatically`],
+    ]},
+  ],
+},
+{
+  id: "security", emoji: "🔒", title: "Security & DevSecOps", color: "#ec4899",
+  subtitle: "Secrets Management · Container Security · Kubernetes Security",
+  topics: [
+    { name: "DevSecOps Mindset", tiers: [
+      [`Perform a STRIDE threat model for your Docker web app — one threat per category`,`List the attack surface of a Kubernetes cluster — every entry point an attacker could use`,`Write defense-in-depth layers for a K8s-hosted app: controls at each layer`,`Explain the principle of least privilege with 3 concrete infrastructure examples`],
+      [`Map the OWASP Top 10 to infrastructure: how does each apply to cloud/container deployments?`,`Write a security review checklist for a new service before it goes to production`,`Explain zero-trust: how does it differ from perimeter security for microservices?`,`Create a risk matrix for your platform: likelihood × impact for the top 10 threats`],
+      [`Conduct a security review of your own infrastructure — document findings in a security report`,`Write a Security Champions program design for a 10-person DevOps team`,`Implement a security gate in your CI/CD pipeline blocking deploys with CRITICAL findings`,`Build a threat model for a multi-tenant Kubernetes platform`],
+      [`Lead a threat modeling workshop for a new microservice architecture`,`Design a security program maturity roadmap from ad-hoc to OWASP DevSecOps Maturity Model`,`Write a security incident response plan for a platform breach`,`Build an automated security posture score based on findings from multiple scanning tools`],
+    ]},
+    { name: "Secrets Management", tiers: [
+      [`Run Vault in dev mode, write a secret, read it, revoke it`,`Install Sealed Secrets on minikube, seal a K8s Secret, commit to Git, apply, verify`,`Use SOPS with an age key to encrypt a YAML file — commit encrypted version to Git`,`Explain: why is base64 in a Kubernetes Secret NOT encryption?`],
+      [`Configure Vault with Kubernetes auth so pods authenticate using their ServiceAccount token`,`Install External Secrets Operator, sync from AWS Secrets Manager to a Kubernetes Secret`,`Write a Vault policy allowing a specific app to read only its own secrets path`,`Implement Vault dynamic DB credentials for PostgreSQL — verify each run gets unique password`],
+      [`Implement Vault agent injection: populates a secret file into a pod without modifying the app`,`Design a secret rotation workflow: Vault rotates DB password, app pods rolling restart`,`Configure Vault with OIDC/JWT authentication for GitHub Actions (no long-lived token)`,`Build a secrets audit dashboard: tracks secret access patterns and flags anomalies`],
+      [`Design a full secrets management architecture for a multi-tenant platform`,`Implement secrets rotation with zero downtime for a production database`,`Build a secrets sprawl detector: discovers all secrets across cloud, K8s, and CI/CD`,`Write a secrets governance policy and automate its enforcement via policy-as-code`],
+    ]},
+    { name: "Container & Image Security", tiers: [
+      [`Scan 5 images with Trivy — rank by critical CVEs: nginx:latest, nginx:alpine, ubuntu, alpine, python:alpine`,`Generate an SBOM for your app image using syft`,`Run a container with --read-only filesystem and --user 1000:1000`,`Run docker scout cves myimage and explain what to fix first`],
+      [`Install Kyverno, write a policy blocking pods running as root (UID 0)`,`Install Falco, trigger a rule violation (write to /etc in container), see the alert`,`Use cosign to sign a Docker image and configure Kyverno to verify signature before running`,`Write a Kyverno ClusterPolicy blocking latest tags and requiring images from your registry`],
+      [`Build a CI pipeline step: Trivy scan → fail on CRITICAL → generate SBOM → sign with cosign`,`Write a Falco rule detecting: shell in container, /etc write, outbound network from restricted pod`,`Configure OPA Gatekeeper with constraints enforcing non-root, no latest tag, required labels`,`Build a container security compliance dashboard: aggregates Trivy, Falco, Kyverno findings`],
+      [`Design a full container supply chain: source → build → scan → sign → attest → verify before deploy`,`Implement SLSA Level 2 provenance for your GitHub Actions pipeline`,`Build a continuous compliance system: scans all running images nightly, reports regressions`,`Write a security policy enforcing minimum SLSA level for production workloads`],
+    ]},
+    { name: "Kubernetes Security", tiers: [
+      [`Run kube-bench on your cluster — identify and fix the top 5 failing checks`,`Create a Namespace with restricted Pod Security Standard — verify root pod is rejected`,`Write a NetworkPolicy: deny all ingress, allow only frontend → backend on port 8080`,`Check what a service account can do using kubectl auth can-i --as=system:serviceaccount:default:mysa`],
+      [`Implement RBAC for a CI/CD service account: create/update Deployments in staging only`,`Enable API server audit logging and find all exec actions in the last hour`,`Implement namespace-level Pod Security Standards for dev (baseline) and prod (restricted)`,`Write a Kyverno policy requiring all Deployments to have resource limits set`],
+      [`Run kube-hunter in active mode against your cluster — fix critical findings`,`Implement a multi-tenant security model: separate namespaces, RBAC, NetworkPolicy, ResourceQuota`,`Set up OPA Gatekeeper with constraints for: non-root, no latest, required labels, min replicas`,`Configure Kubernetes audit logging and alert for unexpected ClusterRoleBinding creation`],
+      [`Design a complete K8s security architecture for a multi-tenant SaaS platform`,`Implement mTLS between all services using Istio or Linkerd`,`Build a Kubernetes security scoring system checking CIS benchmark compliance`,`Write a security incident response runbook for a compromised container`],
+    ]},
+    { name: "Supply Chain Security", tiers: [
+      [`Enable Dependabot on a GitHub repo, review and merge first 3 automated dependency PRs`,`Generate a CycloneDX SBOM and check it for vulnerabilities with grype sbom:cyclonedx.json`,`Explain SLSA Level 1, 2, and 3 — what additional guarantee does each add?`,`Set up gitleaks to scan for secrets in your repository history`],
+      [`Set up Renovate bot to automatically create PRs for dependency updates`,`Implement SLSA Level 1: output a provenance attestation from GitHub Actions`,`Configure Sigstore cosign keyless signing for your container images`,`Set up GitHub Dependency Review to block PRs introducing high-severity vulnerabilities`],
+      [`Implement a full SBOM pipeline: generate → sign → publish → verify at deploy time`,`Configure Rekor (Sigstore transparency log) and verify your image's entry`,`Write a supply chain audit tracing a running container back to its source commit`,`Implement Kyverno policy verifying cosign signatures AND provenance attestations`],
+      [`Design a SLSA Level 3 build pipeline using GitHub Actions with hermetic builds`,`Build a software supply chain security posture dashboard for your entire artifact portfolio`,`Implement a binary authorization policy for GKE or EKS using admission control`,`Write a comprehensive supply chain threat model with mitigations at each stage`],
+    ]},
+    { name: "Compliance & Auditing", tiers: [
+      [`Write an OPA/Rego policy rejecting K8s Deployments with no resource limits`,`Run Conftest against your Terraform plan and check for security policy violations`,`List the top 5 audit log events you'd alert on for a Kubernetes cluster`,`Use kube-bench and document the CIS Kubernetes benchmark score for your cluster`],
+      [`Write a full Rego policy: no root containers, no latest tags, required labels, min replicas >= 2`,`Set up Falco to alert on: shell in container, /etc write, outbound from sensitive pod`,`Write a Terraform policy using OPA/Conftest blocking publicly accessible S3 buckets`,`Implement automated compliance reporting for SOC 2 relevant Kubernetes controls`],
+      [`Build a policy-as-code library covering the top 20 security controls for Kubernetes`,`Set up AWS Config rules enforcing security baselines and aggregating findings`,`Write an automated audit report generator for PCI-DSS relevant infrastructure controls`,`Implement continuous compliance monitoring with alerting on any policy violation`],
+      [`Design a compliance-as-code framework for a multi-cloud, multi-cluster environment`,`Build a security findings correlation engine: aggregates results from 5 scanning tools`,`Implement automated evidence collection for SOC 2 Type II audit`,`Write a regulatory compliance gap analysis tool for cloud infrastructure`],
+    ]},
+  ],
+},
 ];
+
+
 
 /* ══════════════════════════════════════════════════════════════
    STATE
